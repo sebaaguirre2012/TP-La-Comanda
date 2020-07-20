@@ -1,112 +1,71 @@
 <?php
 
-	use Slim\App;
-	use Slim\Http\Request;
-	use Slim\Http\Response;
+require_once "../app/clases/token.php";
 
-	return function (App $app) {
-	
-		$container = $app->getContainer();
+class Middleware {
 
-		$app->add(function ($req, $res, $next) use ($container) {
-			$info=array();
-			$info["metodo"]=$req->getMethod();
-			$info["URI"]=$req->getUri()->getBaseUrl();
-			$info["RUTA"]=$req->getUri()->getPath();
-			$info["autoridad"]=$req->getUri()->getAuthority();
-			
-			$datos=implode(";", $info);
-			$datos=http_build_query( $info,'',', ');
-			$container->get('logger')->info($datos);
-			// $container->get('logger')->addCritical('Hey, a critical log entry!');
-			$response = $next($req, $res);
-			return $response;
-		});
+    public static function ValidarToken($request, $response, $next){
+        $token = $request->getHeader("token");
+        $validacionToken = Token::VerificarToken($token[0]);
 
-		$app->add(function ($req, $res, $next) use ($container) {
-					
-			$id="no anda";
-			if (isset($_SERVER)) {
+        if( $validacionToken["Estado"] == "OK" ){
+            $request = $request->withAttribute("payload", $validacionToken);
+            return $next($request, $response);
+        }
+        else {
+            $newResponse = $response->withJson($validacionToken, 401);
+            return $newResponse;
+        }
+    }
 
-				if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
-					$id= $_SERVER["HTTP_X_FORWARDED_FOR"];
-				
-				if (isset($_SERVER["HTTP_CLIENT_IP"]))
-					$id= $_SERVER["HTTP_CLIENT_IP"];
+    public static function ValidarSocio($request, $response, $next) {
+        $payload = $request->getAttribute("payload")["Payload"];
+        $data = $payload->data;
 
-				$id= $_SERVER["REMOTE_ADDR"];
-			}
+        if($data->tipo_empleado == "socio")
+            return $next($request, $response);
+        
+        else {
+            $respuesta = array("Estado" => "ERROR", "Mensaje" => "No tiene permisos para realizar esta acción.");
+            $newResponse = $response->withJson($respuesta, 401);
+            return $newResponse;
+        }
+    }
 
-			if (getenv('HTTP_X_FORWARDED_FOR'))
-				$id= getenv('HTTP_X_FORWARDED_FOR');
+    public static function ValidarMozo($request, $response, $next) {
+        $payload = $request->getAttribute("payload")["Payload"];
+        $data = $payload->data;
+        
+        if($data->tipo_empleado == "mozo" || $data->tipo_empleado == "socio")
+            return $next($request, $response);
+        
+        else {
+            $respuesta = array("Estado" => "ERROR", "Mensaje" => "No tiene permisos para realizar esta acción.");
+            $newResponse = $response->withJson($respuesta, 401);
+            return $newResponse;
+        }
+    }
 
-			if (getenv('HTTP_CLIENT_IP'))
-				$id= getenv('HTTP_CLIENT_IP');
+    public static function SumarOperacion($request, $response, $next) {
+        $payload = $request->getAttribute("payload")["Payload"];
+        $data = $payload->data;
+        $nombre_operacion = $_SERVER["REQUEST_URI"];
+        date_default_timezone_set("America/Argentina/Buenos_Aires");
+        $fecha = date('Y-m-d');
+        
+        try {
+            $operacion = new App\Models\Operacion;        
+            $operacion->id_empleado = $data->id;
+            $operacion->operacion = $nombre_operacion;
+            $operacion->fecha = $fecha;
+            $operacion->save();
+            return $next($request, $response);
+        }
+        catch(Exception $e) {
+            $error = $e->getMessage();
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => "Error al guaradar operación", "Excepción" => $error);
+            return $response->withJson($mensaje, 200);
+        } 
+    }
+}
 
-			$id= getenv('REMOTE_ADDR');
-			$container->get('IPlogger')->info("ip =".$id);
-			$response = $next($req, $res);
-
-			return $response;
-		});
-
-		$app->add(function ($req, $res, $next) use ($container) {
-			
-			# devolvemos el array de valores
-			$informacion['Datos'] = $_SERVER['HTTP_USER_AGENT'];
-			
-			$container->get('IPlogger')->info("Datos  =".$informacion['Datos']);
-			$response = $next($req, $res);
-			return $response;
-		});
-
-
-	function detect()
-	{
-		$browser=array("IE","OPERA","MOZILLA","NETSCAPE","FIREFOX","SAFARI","CHROME");
-		$os=array("WIN","MAC","LINUX");
-	
-		# definimos unos valores por defecto para el navegador y el sistema operativo
-		$info['browser'] = "OTHER";
-		$info['os'] = "OTHER";
-	
-		# buscamos el navegador con su sistema operativo
-		foreach($browser as $parent)
-		{
-			$s = strpos(strtoupper($_SERVER['HTTP_USER_AGENT']), $parent);
-			$f = $s + strlen($parent);
-			$version = substr($_SERVER['HTTP_USER_AGENT'], $f, 15);
-			$version = preg_replace('/[^0-9,.]/','',$version);
-			if ($s)
-			{
-				$info['browser'] = $parent;
-				$info['version'] = $version;
-			}
-		}
-	
-		# obtenemos el sistema operativo
-		foreach($os as $val)
-		{
-			if (strpos(strtoupper($_SERVER['HTTP_USER_AGENT']),$val)!==false)
-				$info['os'] = $val;
-		}
-	
-		# devolvemos el array de valores
-		return $info;
-	}
-
-
-
-
-
-
-
-		$app->add(function ($req, $res, $next) {
-			$response = $next($req, $res);
-			return $response
-				->withHeader('Access-Control-Allow-Origin', $this->get('settings')['cors'])
-				->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-				->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-		});
-	};
-?>

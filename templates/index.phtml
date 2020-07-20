@@ -26,18 +26,13 @@
         </style>
     </head>
     <body>
-        <h1>UTN FRA</h1>
-        <div>Ejemplo de APIREST con slimFramework</div>
+        <h1>Slim</h1>
+        <div>a microframework for PHP</div>
 
-        <?php  if (isset($name)) : ?>
-            <h2>Bienvenido <?= htmlspecialchars($name); ?>!</h2>
+        <?php if (isset($name)) : ?>
+            <h2>Hello <?= htmlspecialchars($name); ?>!</h2>
         <?php else: ?>
-            <p> en la ruta agrega tu nombre ej: ../public/tuNombre</p>
+            <p>Try <a href="http://www.slimframework.com">SlimFramework</a></p>
         <?php endif; ?>
-
-
-
-
-
     </body>
 </html>

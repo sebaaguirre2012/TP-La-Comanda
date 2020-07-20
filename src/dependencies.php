@@ -1,44 +1,30 @@
 <?php
-    use Slim\App;
-    use Illuminate\Database\Capsule\Manager as Capsule;
 
-    return function (App $app) {
-        $container = $app->getContainer();
+use Slim\App;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
-        // view renderer
-        $container['renderer'] = function ($c) {
-            $settings = $c->get('settings')['renderer'];
-            return new \Slim\Views\PhpRenderer($settings['template_path']);
-        };
+return function (App $app) {
+    $container = $app->getContainer();
 
-        // monolog
-        $container['logger'] = function ($c) {
-            $settings = $c->get('settings')['logger'];
-            $logger = new \Monolog\Logger($settings['name']);
-            $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-            $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
-            return $logger;
-        };
-
-        // monolog
-        $container['IPlogger'] = function ($c) {
-            $settings = $c->get('settings')['IPlogger'];
-            $logger = new \Monolog\Logger($settings['name']);
-            $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-            $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
-            return $logger;
-        };
-
-        $container['db'] = function ($container) {
-            $capsule = new \Illuminate\Database\Capsule\Manager;
-            $capsule->addConnection($container['settings']['db']);
-
-            // $capsule->setAsGlobal();
-            $capsule->bootEloquent();
-
-            return $capsule;
-        };
-
-        $container['db']->setAsGlobal();
+    // view renderer
+    $container['renderer'] = function ($c) {
+        $settings = $c->get('settings')['renderer'];
+        return new \Slim\Views\PhpRenderer($settings['template_path']);
     };
-?>
+
+    // monolog
+    $container['logger'] = function ($c) {
+        $settings = $c->get('settings')['logger'];
+        $logger = new \Monolog\Logger($settings['name']);
+        $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
+        $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
+        return $logger;
+    };
+
+    $dbSettings = $container->get('settings')['db'];
+
+    $capsule = new Capsule;
+    $capsule->addConnection($dbSettings);
+    $capsule->bootEloquent();
+    $capsule->setAsGlobal();
+};
