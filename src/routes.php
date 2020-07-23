@@ -43,15 +43,17 @@ return function (App $app) {
     $app->get('/empleado/operaciones/', \EmpleadoApi::class . ':CantidadOperacionesPorEmpleado')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken'); 
-
-
-    // $app->get('/empleado/operaciones/sector/', \EmpleadoApi::class . ':CantidadOperacionesPorSector')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');   
-    // $app->get('/empleado/operaciones/sector_empleado/', \EmpleadoApi::class . ':CantidadOperacionesPorSectorYEmpleado')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');  
+    $app->get('/empleado/operaciones/sector/', \EmpleadoApi::class . ':CantidadOperacionesPorSector')
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');  
+    $app->get('/empleado/operaciones/sector/empleado/', \EmpleadoApi::class . ':CantidadOperacionesPorSectorYEmpleado')
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');  
     
+
+
+
+        
 
     // //PEDIDOS
     $app->post('/pedido/tomar/', \PedidoApi::class . ':TomarPedido')
