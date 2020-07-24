@@ -2,8 +2,7 @@
 
 use Firebase\JWT\JWT;
 
-class Token
-{
+class Token {
     private static $clave = 'ClaveSuperSecreta@';
     private static $encriptacion = ['HS256'];
     
@@ -11,7 +10,7 @@ class Token
         $ahora = time();
         $payload = array(
         	'iat' => $ahora,
-            'exp' => $ahora + (60*60),
+            'exp' => $ahora + (6000*6000), //TODO 60*60 
             'aud' => "usuario",
             'app' => "Comanda",
             'data' => $datos

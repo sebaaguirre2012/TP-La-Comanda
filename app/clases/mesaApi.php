@@ -2,25 +2,34 @@
 
 class MesaApi 
 {
-    // public function CargarMesa($request, $response, $args)
-    // {
-    //     $codigo = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 3)), 0, 5);
-    //     try
-    //     {
-    //         $mesa = new App\Models\Mesa;
-    //         $mesa->codigo = $codigo;
-    //         $mesa->save();
-    //         $respuesta = array("Mensaje" => "La mesa se registro correctamente", "Codigo" => $codigo);
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $mensaje = $e->getMessage();
-    //         $respuesta = array("Estado" => "ERROR", "Mensaje" => "$mensaje");
-    //     }
+    //OK
+    public function CargarMesa($request, $response, $args) {
+        $codigo = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 3)), 0, 5);
+        try {
+            $mesa = new App\Models\Mesa;
+            $mesa->codigo = $codigo;
+            $mesa->save();
+            $respuesta = array("Mensaje" => "La mesa se registró correctamente.", "Codigo" => $codigo);
+        }
+        catch(Exception $e) {
+            $mensaje = $e->getMessage();
+            $respuesta = array("Estado" => "ERROR", "Mensaje" => "$mensaje");
+        }
 
-    //     return $response->withJson($respuesta,200);
-    // } 
+        return $response->withJson($respuesta, 200);
+    } 
 
+
+
+
+
+
+
+
+
+
+
+    
     // public function CambiarEstadoClienteEsperandoPedido($request, $response, $args)
     // {
     //     $parametros = $request->getParsedBody();

@@ -3,7 +3,7 @@
 require_once 'token.php';
 
 class EmpleadoApi {
-
+    //OK
     public function LoginEmpleado($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $usuario = $parametros['usuario'];
@@ -20,22 +20,26 @@ class EmpleadoApi {
             if($empleado) {
                 $tipoEmpleado = $tipoEmpleadoDao->where('id', '=', $empleado->id_tipo_empleado)->first();
 
-                $datos = [
-                    'id' => $empleado->id,
-                    'usuario' => $usuario,
-                    'clave' => $clave,
-                    'id_tipo_empleado' => $tipoEmpleado->id,
-                    'tipo_empleado' => $tipoEmpleado->tipo_empleado,
-                    'id_sector' => $empleado->id_sector
-                ];   
-
-                $token = Token::CrearToken($datos);
-                $logger->id_empleado = $empleado->id;
-                $logger->fecha_ingreso = $horaActual;
-                $logger->hora_ingreso = $horaActual;
-                $logger->save();
-
-                $mensaje = array("Mensaje" => "Bienvenido " . $usuario, "Token " => $token);
+                if ($empleado->estado == 'S')
+                    $mensaje = array("Mensaje" => "El empleado se encuentra suspendido.");
+                else {
+                    $datos = [
+                        'id' => $empleado->id,
+                        'usuario' => $usuario,
+                        'clave' => $clave,
+                        'id_tipo_empleado' => $tipoEmpleado->id,
+                        'tipo_empleado' => $tipoEmpleado->tipo_empleado,
+                        'id_sector' => $empleado->id_sector
+                    ];   
+    
+                    $token = Token::CrearToken($datos);
+                    $logger->id_empleado = $empleado->id;
+                    $logger->fecha_ingreso = $horaActual;
+                    $logger->hora_ingreso = $horaActual;
+                    $logger->save();
+    
+                    $mensaje = array("Mensaje" => "Bienvenido " . $usuario, "Token " => $token);
+                }
             }
             else {
                 $mensaje = array("Estado" => "Error", "Mensaje " => "Usuario y/o clave incorrectos");
@@ -48,7 +52,7 @@ class EmpleadoApi {
 
         return $response->withJson($mensaje, 200);
     }    
-
+    //OK
     public function AltaEmpleado($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $usuario = $parametros['usuario'];
@@ -107,7 +111,7 @@ class EmpleadoApi {
         }
         return $response->withJson($mensaje, 200);    
     }
-
+    //OK
     public function IngresosAlSistema($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -150,7 +154,7 @@ class EmpleadoApi {
             }
         } 
     }
-
+    //OK
     public function ListadoEmpleados($request, $response, $args) {
         $empleado = new App\Models\Empleado;
         $empleados = $empleado->where('estado', '!=', 'E')->get();
@@ -159,7 +163,7 @@ class EmpleadoApi {
             echo 'Id: ' . $empleados[$i]->id . ". Usuario: " . $empleados[$i]->usuario . ". Estado: " . $empleados[$i]->estado . PHP_EOL;
         }        
     }
-
+    //OK
     public function EliminarEmpleado($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $idEmpleado = $parametros['id_empleado'];
@@ -185,7 +189,7 @@ class EmpleadoApi {
         }
         return $response->withJson($mensaje, 200);
     }
-
+    //OK
     public function SuspenderEmpleado($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $idEmpleado = $parametros['id_empleado'];
@@ -207,7 +211,7 @@ class EmpleadoApi {
         }
         return $response->withJson($mensaje, 200); 
     }
-
+    //OK
     public function VerEmpleadosPorPuesto($request, $response, $args) {
         try {
             if(isset($_GET['puesto']))
@@ -234,7 +238,7 @@ class EmpleadoApi {
             return $response->withJson($mensaje, 200);
         }
     }
-
+    //OK
     public function CantidadOperacionesPorEmpleado($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -301,7 +305,7 @@ class EmpleadoApi {
                 echo 'Nombre de empleado inexistente.';         
         }
     }
-
+    //OK
     public function CantidadOperacionesPorSector($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -346,8 +350,7 @@ class EmpleadoApi {
                     'Barra de cervezas: ' . $operacionesBarraCervezas . ' operaciones.' . PHP_EOL .                    
                     'Candy Bar: ' . $operacionesCandyBar . ' operaciones.' . PHP_EOL;
         }
-        else
-        {
+        else {
             $fecha_desde = strtotime($fecha_desde);
             $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
             $fecha_hasta = strtotime($fecha_hasta);
@@ -359,8 +362,7 @@ class EmpleadoApi {
                                      ->where('empleados.estado', '!=', 'E')
                                      ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')->get();
 
-            for($i = 0; $i < count($operaciones); $i++)
-            {
+            for($i = 0; $i < count($operaciones); $i++) {
                 if($operaciones[$i]->id_sector == 1)
                     $operacionesLocal++;
                 if($operaciones[$i]->id_sector == 2)
@@ -385,7 +387,7 @@ class EmpleadoApi {
         }
 
     }
-
+    //OK
     static function CalcularCantidadPorEmpleado($arrayDeIdEmpleado, $operaciones) {
         //Si el array del sector tiene al menos un dato mas que el -1
         if(count($arrayDeIdEmpleado) > 1) {
@@ -420,7 +422,7 @@ class EmpleadoApi {
         else
             echo 'NO HAY OPERACIONES' . PHP_EOL;
     }
-
+    //OK
     static function CalcularCantidadOperacionesPorEmpleado( $idDeEmpleadosLocal, $idDeEmpleadosSalon, $idDeEmpleadosVinos, 
                                                             $idDeEmpleadosCerveza, $idDeEmpleadosCocina, $idDeEmpleadosCandyBar, $operaciones) {
         echo 'LOCAL' . PHP_EOL;   
@@ -451,7 +453,7 @@ class EmpleadoApi {
         echo 'CANDY BAR' . PHP_EOL;            
         EmpleadoApi::CalcularCantidadPorEmpleado($idDeEmpleadosCandyBar, $operaciones);
     }
-
+    //OK
     public function CantidadOperacionesPorSectorYEmpleado($request, $response, $args) {    
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];

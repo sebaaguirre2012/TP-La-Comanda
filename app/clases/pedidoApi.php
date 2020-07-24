@@ -1,9 +1,9 @@
 <?php
 
 class PedidoApi {
+    //OK
     public function CargarPedido($request, $response, $args) {
-        try
-        {     
+        try {     
             $parametros = $request->getParsedBody();    
             $idMesa = $parametros['id_mesa'];
             $idProducto = $parametros['id_producto'];
@@ -17,7 +17,7 @@ class PedidoApi {
             $pedido = new App\Models\Pedido;
 
             $pedido->id_mesa = $idMesa;
-            $pedido->id_producto = $id_producto;
+            $pedido->id_producto = $idProducto;
             $pedido->cantidad = $cantidad;
             $pedido->nombre_cliente = $nombreCliente;
             $pedido->id_estado_pedido = 1;
@@ -26,7 +26,7 @@ class PedidoApi {
             $pedido->fecha = $fecha;
 
             if($_FILES) {
-                $nombreFoto = PedidoApi::GuardarFoto($_FILES['foto'], $codigo, $id_mesa);
+                $nombreFoto = PedidoApi::GuardarFoto($_FILES['foto'], $codigo, $idMesa);
                 $pedido->nombre_foto = $nombreFoto;
             }         
             
@@ -40,7 +40,7 @@ class PedidoApi {
 
         return $response->withJson($respuesta, 200);
     }
-
+    //OK
     static function GuardarFoto($foto, $codigo, $idMesa) {        
         $ruta = $foto['tmp_name'];
         $extension = explode(".", $foto['name']);
@@ -52,39 +52,31 @@ class PedidoApi {
         
         return $nombreFoto;
     }
+    //OK
+    public function VerPedidosPendientes($request, $response, $args) {
+        $payload = $request->getAttribute("payload")["Payload"];
+        $infoEmpleado = $payload->data;
 
-    // public function VerPedidosPendientes($request, $response, $args)
-    // {
-    //     $payload = $request->getAttribute("payload")["Payload"];
-    //     $infoEmpleado = $payload->data;
+        $pedido = new App\Models\Pedido;
 
-    //     $idSector = $infoEmpleado->id_sector;
-
-    //     $pedido = new App\Models\Pedido;
-
-    //     $pedidosPendientes = $pedido->rightJoin('productos', 'pedidos.id_producto', '=', 'productos.id')
-    //     ->where('pedidos.id_estadoPedido', '=', 1)->get();
-
-    //     $mensaje = [];
-    //     $flag = false; 
-
-    //     for($i = 0; $i < count($pedidosPendientes); $i++)
-    //     {
-    //         if($pedidosPendientes[$i]->id_sector == $idSector)
-    //         {
-    //             $flag = true;
-    //             echo    "\nProducto: " . $pedidosPendientes[$i]->nombre .    
-    //                     "\nCantidad: " . $pedidosPendientes[$i]->cantidad .                         
-    //                     "\nMesa: " . $pedidosPendientes[$i]->id_mesa . 
-    //                     "\nCliente: " . $pedidosPendientes[$i]->nombreCliente .
-    //                     "\nCodigo: " . $pedidosPendientes[$i]->codigo .
-    //                     "\n------------------------";
-    //         }
-    //     }
-    //     if(!$flag)
-    //         echo 'No tiene pedidos pendientes';
-    // }
-
+        $pedidosPendientes = $pedido->rightJoin('productos', 'pedidos.id_producto', '=', 'productos.id')
+                                    ->where('pedidos.id_estado_pedido', '=', 1)
+                                    ->get();
+        
+        if ($pedidosPendientes != null) {
+            for($i = 0; $i < count($pedidosPendientes); $i++) {
+                echo    PHP_EOL . "Producto: " . $pedidosPendientes[$i]->nombre .    
+                        PHP_EOL . "Cantidad: " . $pedidosPendientes[$i]->cantidad .                         
+                        PHP_EOL . "Mesa: " . $pedidosPendientes[$i]->id_mesa . 
+                        PHP_EOL . "Cliente: " . $pedidosPendientes[$i]->nombre_cliente .
+                        PHP_EOL . "Codigo: " . $pedidosPendientes[$i]->codigo .
+                        PHP_EOL . "------------------------";
+            }
+        }
+        else
+            echo 'No hay pedidos pendientes';
+    }
+    //OK
     public function TomarPedido($request, $response, $args) {
         $payload = $request->getAttribute("payload")["Payload"];
         $infoEmpleado = $payload->data;
@@ -96,8 +88,8 @@ class PedidoApi {
         $pedido = new App\Models\Pedido;
 
         try {
-            $pedidoATomar = $pedido->where('codigo', '=', $codigo)->firstOrFail();        
-
+            $pedidoATomar = $pedido ->where('codigo', '=', $codigo)
+                                    ->firstOrFail();        
             $idSectorProducto = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
                                         ->where('productos.id', '=', $pedidoATomar->id_producto)
                                         ->select('productos.id_sector')->firstOrFail();
@@ -107,7 +99,7 @@ class PedidoApi {
             $horaEntregaEstimada = $horaActual->format('H:i');
 
             $pedidoATomar->id_estado_pedido = 2;
-            $pedidoATomar->tiempo_estimado = $tiempoEstimado;
+            $pedidoATomar->tiempo_estimado = ($tiempoEstimado * 100);
             $pedidoATomar->hora_entrega_estimada = $horaEntregaEstimada;
             $pedidoATomar->id_empleado = $infoEmpleado->id;
             $pedidoATomar->save();
@@ -120,79 +112,107 @@ class PedidoApi {
         }     
         return $response->withJson($mensaje, 200);
     }
+    //OK
+    public function VerEstadoPedidos($request, $response, $args) {
+        $pedido = new App\Models\Pedido;
 
-    // public function ServirPedido($request, $response, $args)
-    // {
-    //     $payload = $request->getAttribute("payload")["Payload"];
-    //     $infoEmpleado = $payload->data;
-    //     $id = $infoEmpleado->id;
-    //     $horaEntrega = date('H:i');
-    //     $pedido = new App\Models\Pedido;
-    //     try
-    //     {
-    //         $pedidoAServir = $pedido->where([['id_estadoPedido', '=', 2],['id_empleado', '=', $id],])->firstOrFail();        
-    //         $pedidoAServir->id_estadoPedido = 3;
-    //         $pedidoAServir->horaEntrega = $horaEntrega;
-    //         $pedidoAServir->save();
-    //         $mensaje = array("Estado" => "Ok", "Mensaje " => "El pedido " . $pedidoAServir->codigo . " esta listo para servir");
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $mensaje = array("Estado" => "Error", "Mensaje " => "No tiene pedidos en preparacion");
-    //     }       
-    //     return $response->withJson($mensaje,200);
-    // }
+        $pedidos = $pedido  ->join('estado_pedidos', 'pedidos.id_estado_pedido', '=', 'estado_pedidos.id')
+                            ->select('pedidos.id', 'estado_pedidos.estado', 'pedidos.codigo', 'pedidos.nombre_cliente')
+                            ->get();
 
-    // public function VerEstadoPedidos($request, $response, $args)
-    // {
-    //     $pedido = new App\Models\Pedido;
+        if (count($pedidos) > 1) {
+            echo 'Estado de Pedidos' . PHP_EOL . PHP_EOL;
+            for($i = 0; $i < count($pedidos); $i++){
+                echo    "Pedido : " . $pedidos[$i]->id . PHP_EOL . 
+                        "Estado : " . $pedidos[$i]->estado . PHP_EOL . 
+                        "Código : " . $pedidos[$i]->codigo . PHP_EOL .
+                        "Cliente : " . $pedidos[$i]->nombre_cliente . PHP_EOL .                 
+                        "-------------------------------------------------" . PHP_EOL;
+            }
+        }
+        else    
+            echo 'No hay pedidos.';
+    }
+    //OK
+    public function TiempoRestante($request, $response, $args) {
+        $parametros = $request->getParsedBody();
+        $codigoPedido = $parametros['codigo_pedido'];
+        $codigoMesa = $parametros['codigo_mesa'];
 
-    //     $pedidos = $pedido->join('estado_pedidos', 'pedidos.id_estadoPedido', '=', 'estado_pedidos.id')
-    //     ->select('pedidos.id', 'estado_pedidos.estado', 'pedidos.codigo', 'pedidos.nombreCliente')
-    //     ->get();
+        $mesa = new App\Models\Mesa;
+        $idMesa = $mesa ->where('codigo', '=', $codigoMesa)
+                        ->select('id')
+                        ->first();
 
-    //     for($i = 0; $i < count($pedidos); $i++)
-    //     {
-    //         echo "Pedido : " . $pedidos[$i]->id . "\n" . 
-    //              "Estado : " . $pedidos[$i]->estado . "\n" . 
-    //              "Código : " . $pedidos[$i]->codigo . "\n" .
-    //              "Cliente : " . $pedidos[$i]->nombreCliente . "\n" .                 
-    //              "-------------------------------------------------\n";
-    //     }
-    // }
+        $pedido = new App\Models\Pedido;
+        $pedidoActual = $pedido ->where('codigo', '=', $codigoPedido)
+                                ->first();
 
-    // public function TiempoRestante($request, $response, $args)
-    // {
-    //     $parametros = $request->getParsedBody();
-    //     $codigoPedido = $parametros['codigoPedido'];
-    //     $codigoMesa = $parametros['codigoMesa'];
+        $mensaje = array("Estado" => "Error", "Mensaje " => "No hay pedidos con ese código o para esa mesa.");                      
+        if ($pedidoActual != null || $idMesa != null) {
+            $entrega = $pedidoActual->hora_entrega_estimada;
 
-    //     $mesa = new App\Models\Mesa;
-    //     $idMesa = $mesa->where('codigo', '=', $codigoMesa)->select('id')->first();
-
-    //     $pedido = new App\Models\Pedido;
-    //     $pedidoActual = $pedido->where('codigo', '=', $codigoPedido)->first();
-    //     $entrega = $pedidoActual->horaEntregaEstimada;
-
-    //     if($pedidoActual->id_estadoPedido == 2 && $pedidoActual->id_mesa == $idMesa->id)
-    //     {            
-    //         $horaActual = new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires'));
-    //         $horaEntregaEstimada = new DateTime($entrega ,new DateTimeZone('America/Argentina/Buenos_Aires'));
+            if($pedidoActual->id_estado_pedido == 2 && $pedidoActual->id_mesa == $idMesa->id) {            
+                $horaActual = new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires'));
+                $horaEntregaEstimada = new DateTime($entrega, new DateTimeZone('America/Argentina/Buenos_Aires'));
+                
+                if($horaActual > $horaEntregaEstimada) 
+                    $mensaje = array("Estado" => "Retrasado", "Mensaje " => "Se retrasó el pedido.");
             
-    //         if($horaActual > $horaEntregaEstimada)
-    //         {
-    //             $resultado = array("Estado" => "Retrasado", "Mensaje " => "El tiempo de espera ha superado la hora estimada de entrega del pedido");
-    //         }
-    //         else
-    //         {
-    //             $intervalo = $horaEntregaEstimada->diff($horaActual);
-    //             $resultado = array("Estado" => "OK", "Tiempo restante" => $intervalo->format('%H:%I:%S'));
-    //         }  
+                else {
+                    $intervalo = $horaEntregaEstimada->diff($horaActual);
+                    $mensaje = array("Estado" => "OK", "Tiempo restante" => $intervalo->format('%H:%I:%S'));
+                }  
+            }
+        }
+        return $response->withJson($mensaje, 200);
+    }
+    //TODO
+    public function ServirPedido($request, $response, $args)
+    {
+        $payload = $request->getAttribute("payload")["Payload"];
+        $infoEmpleado = $payload->data;
+        $id = $infoEmpleado->id;
+        $horaEntrega = date('H:i');
+        $pedido = new App\Models\Pedido;
+        
+        try {
+            $pedidoAServir = $pedido->where([['id_estadoPedido', '=', 2],['id_empleado', '=', $id],])
+                                    ->firstOrFail();        
+            $pedidoAServir->id_estado_pedido = 3;
+            $pedidoAServir->hora_entrega = $horaEntrega;
+            $pedidoAServir->save();
+            $mensaje = array("Estado" => "Ok", "Mensaje " => "El pedido " . $pedidoAServir->codigo . " esta listo.");
+        }
+        catch(Exception $e) {
+            $mensaje = array("Estado" => "Error", "Mensaje " => "No hay pedidos en preparación.");
+        }       
+        return $response->withJson($mensaje, 200);
+    }
 
-    //         return $response->withJson($resultado,200);
-    //     }
 
-    // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
 
     // public function PedidosRetrasados($request, $response, $args)
     // {
