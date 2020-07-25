@@ -77,9 +77,16 @@ return function (App $app) {
     $app->get('/pedido/cancelados/', \PedidoApi::class . ':PedidosCancelados') //OK
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');
-    // $app->get('/pedido/mas_vendido/', \PedidoApi::class . ':LoMasVendido')
-    //     ->add(\Middleware::class . ':ValidarSocio')
-    //     ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/pedido/mas_vendido/', \PedidoApi::class . ':LoMasVendido') //TODO
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/pedido/menos_vendido/', \PedidoApi::class . ':LoMenosVendido') //TODO
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/pedido/retrasados/', \PedidoApi::class . ':PedidosRetrasados') //OK
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');
+        
 
     // //MESA
     $app->post('/mesa/cargar/', \MesaApi::class . ':CargarMesa') //OK
@@ -102,36 +109,25 @@ return function (App $app) {
         ->add(\Middleware::class . ':SumarOperacion')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/mesa/mas_usada/', \MesaApi::class . ':LaMasUsada') //OK
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/mesa/menos_usada/', \MesaApi::class . ':LaMenosUsada')
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/mesa/facturacion/mayor/', \MesaApi::class . ':LaQueMasFacturo')
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/mesa/facturacion/menor/', \MesaApi::class . ':LaQueMenosFacturo')
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken');
+    $app->get('/mesa/factura/mayor_importe/', \MesaApi::class . ':FacturaMayorImporte')
+        ->add(\Middleware::class . ':ValidarSocio')
+        ->add(\Middleware::class . ':ValidarToken'); 
 
 
-    
 
-    // $app->get('/pedido/menos_vendido/', \PedidoApi::class . ':LoMenosVendido')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');
-    // $app->get('/pedido/retrasados/', \PedidoApi::class . ':PedidosRetrasados')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');
-
-
-    
-    
-    
-    // $app->get('/mesa/mas_usada/', \MesaApi::class . ':LaMasUsada')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');
-    // $app->get('/mesa/menos_usada/', \MesaApi::class . ':LaMenosUsada')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');
-    // $app->get('/mesa/facturacion/mayor/', \MesaApi::class . ':LaQueMasFacturo')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');
-    // $app->get('/mesa/facturacion/menor/', \MesaApi::class . ':LaQueMenosFacturo')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');
-    // $app->get('/mesa/factura/mayor/', \MesaApi::class . ':FacturaMayorImporte')
-    // ->add(\Middleware::class . ':ValidarSocio')
-    // ->add(\Middleware::class . ':ValidarToken');  
+     
     // $app->get('/mesa/factura/menor/', \MesaApi::class . ':FacturaMenorImporte')
     // ->add(\Middleware::class . ':ValidarSocio')
     // ->add(\Middleware::class . ':ValidarToken');

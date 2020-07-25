@@ -167,453 +167,357 @@ class MesaApi {
 
         return $response->withJson($mensaje, 200);
     }
+    //OK
+    public function LaMasUsada($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
+        $pedido = new App\Models\Pedido;
 
-    // public function LaMasUsada($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $pedido = new App\Models\Pedido;
+        if($fecha != "") {         
+            $fecha = strtotime($fecha);
+            $fecha = date('Y-m-d H:i:s' , $fecha); 
 
-    //     if($fecha != 0)
-    //     {         
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha); 
+            $mesasUsadasDao = $pedido->orderBy('id_mesa')
+                                     ->where('fecha', '=', $fecha)
+                                     ->select('id_mesa')
+                                     ->get();
+        }
+        else {
+            $fecha_desde = strtotime($fecha_desde);
+            $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+            $fecha_hasta = strtotime($fecha_hasta);
+            $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
-    //         $mesasUsadasDao = $pedido->orderBy('id_mesa')
-    //         ->where('fecha', '=', $fecha)
-    //         ->select('id_mesa')->get();
-
-    //         MesaApi::BuscarMesaMasUsada($mesasUsadasDao);   
-
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
-
-    //         $mesasUsadasDao = $pedido->orderBy('id_mesa')
-    //         ->where('fecha', '>=', $fecha_desde)
-    //         ->where('fecha', '<=', $fecha_hasta)
-    //         ->select('id_mesa')->get();
-
-    //         MesaApi::BuscarMesaMasUsada($mesasUsadasDao);
-    //     }
-    // }
-
-    // public function LaMenosUsada($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $pedido = new App\Models\Pedido;
-    //     $mesa = new App\Models\Mesa;
-    //     $mesas = $mesa->all();
-    //     $idMesas = [];
-
-    //     for($i = 0; $i < count($mesas); $i++)
-    //     {
-    //         $idMesas[] = $mesas[$i]->id;
-    //     }
-
-    //     if($fecha != 0)
-    //     {         
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha); 
-
-    //         $mesasUsadasDao = $pedido->orderBy('id_mesa')
-    //                                 ->where('fecha', '=', $fecha)
-    //                                 ->select('id_mesa')->get();
-
-    //         $mesasUsadas = [];
-    //         $mesaMenosUsada = -1;
+            $mesasUsadasDao = $pedido->orderBy('id_mesa')
+                                     ->where('fecha', '>=', $fecha_desde)
+                                     ->where('fecha', '<=', $fecha_hasta)
+                                     ->select('id_mesa')
+                                     ->get();
+        }
+        MesaApi::BuscarMesaMasUsada($mesasUsadasDao);
+    }
+    //OK
+    static function BuscarMesaMasUsada($mesasUsadasDao) {
+        $mesasUsadas = [];
         
-    //         for($i = 0; $i < count($mesasUsadasDao); $i++)
-    //         {
-    //             $mesasUsadas[] = $mesasUsadasDao[$i]->id_mesa;
-    //         } 
-            
-    //         //Recorro todas las mesas existentes para ver si alguna no se utilizo
-    //         for($i = 0; $i < count($idMesas); $i++)
-    //         {
-    //             $mesaUsada = false;
-
-    //             for($j = 0; $j < count($mesasUsadas); $j++)
-    //             {
-    //                 if($idMesas[$i] == $mesasUsadas[$j])
-    //                 {
-    //                     $mesaUsada = true;
-    //                     break;
-    //                 }
-    //             }
-    //             if(!$mesaUsada)
-    //             {
-    //                 $mesaMenosUsada = $idMesas[$i];
-    //                 break;
-    //             }
-    //         }
-
-    //         if($mesaMenosUsada == -1)
-    //         {
-    //             $mesaMenosUsada = MesaApi::BuscarMesaMenosUsada($mesasUsadasDao, $mesasUsadas);
-    //             echo "Mesa menos usada: " . $mesaMenosUsada['id'] . "\n" . "Cantidad de veces: " . $mesaMenosUsada['cantidad'];
-    //         }
-    //         else
-    //             echo "Mesa menos usada: " . $mesaMenosUsada . "\n" . "Cantidad de veces: 0";               
-
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
-
-            
-    //         $mesasUsadasDao = $pedido->orderBy('id_mesa')
-    //         ->where('fecha', '>=', $fecha_desde)
-    //         ->where('fecha', '<=', $fecha_hasta)
-    //         ->select('id_mesa')->get();
-
-    //         $mesasUsadas = [];
-    //         $mesaMenosUsada = -1;
+        for($i = 0; $i < count($mesasUsadasDao); $i++)
+            $mesasUsadas[] = $mesasUsadasDao[$i]->id_mesa;
         
-    //         for($i = 0; $i < count($mesasUsadasDao); $i++)
-    //         {
-    //             $mesasUsadas[] = $mesasUsadasDao[$i]->id_mesa;
-    //         } 
-            
-    //         for($i = 0; $i < count($idMesas); $i++)
-    //         {
-    //             $mesaUsada = false;
+        $mesasUsadas[] = -1;
+        $mesaMasUsada;
+        $cantidad = 0;
 
-    //             for($j = 0; $j < count($mesasUsadas); $j++)
-    //             {
-    //                 if($idMesas[$i] == $mesasUsadas[$j])
-    //                 {
-    //                     $mesaUsada = true;
-    //                     break;
-    //                 }
-    //             }
-    //             if(!$mesaUsada)
-    //             {
-    //                 $mesaMenosUsada = $idMesas[$i];
-    //                 break;
-    //             }
-    //         }
-
-    //         if($mesaMenosUsada == -1)
-    //         {
-    //             $mesaMenosUsada = MesaApi::BuscarMesaMenosUsada($mesasUsadasDao, $mesasUsadas);
-    //             echo "Mesa menos usada: " . $mesaMenosUsada['id'] . "\n" . "Cantidad de veces: " . $mesaMenosUsada['cantidad'];
-    //         }
-    //         else
-    //             echo "Mesa menos usada: " . $mesaMenosUsada . "\n" . "Cantidad de veces: 0";               
-
-    //     }
-    // }
-
-    // public function LaQueMasFacturo($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $factura = new App\Models\Factura;
-
-    //     if($fecha != 0)
-    //     {         
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha); 
-
-    //         try
-    //         {
-    //             $mesaFacturacion = $factura->where('fecha', '=', $fecha)
-    //                                        ->selectRaw('id_mesa as id, SUM(total) as total')
-    //                                        ->groupBy('id_mesa')->get();
+        if(count($mesasUsadas) > 1) {
+            $contador = 1;            
     
-    //             $facturacion = 0; 
-    
-    //             if(count($mesaFacturacion) > 0)
-    //             {
-    //                 for($i = 0; $i < count($mesaFacturacion); $i++)
-    //                 {
-    //                     if($mesaFacturacion[$i]->total > $facturacion)
-    //                     {
-    //                         $facturacion = $mesaFacturacion[$i]->total;
-    //                         $respuesta = array("Mesa: " => $mesaFacturacion[$i]->id, "Facturacion: " => "$" . $facturacion);
-    //                     }
-    //                 }
-    //             }
-    //             else
-    //                 $respuesta = array("Estado: " => "Error", "Mensaje: " => "No hubo movimientos");
-    
-    //         }
-    //         catch(Exception $e)
-    //         {
-    //             $mensaje = $e->getMessage();
-    //             $respuesta = array("Estado: " => "Error", "Mensaje: " => $mensaje);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+            for($i = 0; $i <= count($mesasUsadas); $i++) {
+                if($mesasUsadas[$i+1] == -1) {
+                    if($contador > $cantidad) {
+                        $cantidad = $contador;
+                        $mesaMasUsada = $mesasUsadas[$i];     
+                    } 
+                    break;            
+                }
 
-    //         try
-    //         {
-    //             $mesaFacturacion = $factura->where('fecha', '>=', $fecha_desde)
-    //                                        ->where('fecha', '<=', $fecha_hasta)
-    //                                        ->selectRaw('id_mesa as id, SUM(total) as total')
-    //                                        ->groupBy('id_mesa')->get();
+                if($mesasUsadas[$i+1] == $mesasUsadas[$i])
+                    $contador++;
     
-    //             $facturacion = 0; 
+                else {
+                    if($contador > $cantidad) {
+                        $cantidad = $contador;
+                        $mesaMasUsada = $mesasUsadas[$i];       
+                    }   
+                    $contador = 1;                 
+                }  
+            }
+            echo 'Mesa más usada: ' . $mesaMasUsada . PHP_EOL . 
+                 'Cantidad de veces: ' . $cantidad . PHP_EOL;
+        }
+        else
+            echo 'Sin operaciones' . PHP_EOL;
+    }
+    //OK
+    public function LaMenosUsada($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
+
+        $pedido = new App\Models\Pedido;
+        $mesa = new App\Models\Mesa;
+        $mesas = $mesa->all();
+        $idMesas = [];
+
+        for($i = 0; $i < count($mesas); $i++)
+            $idMesas[] = $mesas[$i]->id;
+
+        if($fecha != "") {         
+            $fecha = strtotime($fecha);
+            $fecha = date('Y-m-d H:i:s' , $fecha); 
+
+            $mesasUsadasDao = $pedido->orderBy('id_mesa')
+                                     ->where('fecha', '=', $fecha)
+                                     ->select('id_mesa')
+                                     ->get();
+        }
+        else {
+            $fecha_desde = strtotime($fecha_desde);
+            $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+            $fecha_hasta = strtotime($fecha_hasta);
+            $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+
+            $mesasUsadasDao = $pedido->orderBy('id_mesa')
+                                     ->where('fecha', '>=', $fecha_desde)
+                                     ->where('fecha', '<=', $fecha_hasta)
+                                     ->select('id_mesa')
+                                     ->get();
+        }
+
+        $mesasUsadas = [];
+        $mesaMenosUsada = -1;
     
-    //             if(count($mesaFacturacion) > 0)
-    //             {
-    //                 for($i = 0; $i < count($mesaFacturacion); $i++)
-    //                 {
-    //                     if($mesaFacturacion[$i]->total > $facturacion)
-    //                     {
-    //                         $facturacion = $mesaFacturacion[$i]->total;
-    //                         $respuesta = array("Mesa: " => $mesaFacturacion[$i]->id, "Facturacion: " => "$" . $facturacion);
-    //                     }
-    //                 }
-    //             }
-    //             else
-    //                 $respuesta = array("Estado: " => "Error", "Mensaje: " => "No hubo movimientos");
+        for($i = 0; $i < count($mesasUsadasDao); $i++) {
+            $mesasUsadas[] = $mesasUsadasDao[$i]->id_mesa;
+        } 
+ 
+        //Recorro todas las mesas existentes para ver si alguna no se utilizo
+        for($i = 0; $i < count($idMesas); $i++) {
+            $mesaUsada = false;
+
+            for($j = 0; $j < count($mesasUsadas); $j++) {
+                if($idMesas[$i] == $mesasUsadas[$j]) {
+                    $mesaUsada = true;
+                    break;
+                }
+            }
+            if(!$mesaUsada) {
+                $mesaMenosUsada = $idMesas[$i];
+                break;
+            }
+        }
+
+        if($mesaMenosUsada == -1) {
+            $mesaMenosUsada = MesaApi::BuscarMesaMenosUsada($mesasUsadasDao, $mesasUsadas);
+            echo 'Mesa menos usada: ' . $mesaMenosUsada['id'] . PHP_EOL . 
+                 'Cantidad de veces: ' . $mesaMenosUsada['cantidad'] . PHP_EOL;
+        }
+        else
+            echo 'Mesa menos usada: ' . $mesaMenosUsada . PHP_EOL . 
+                 'Cantidad de veces: 0';               
+    }
+    //OK
+    static function BuscarMesaMenosUsada($mesasUsadasDao, $mesasUsadas) {       
+        $mesasUsadas[] = -1;
+        $mesaMenosUsada;
+        $cantidad = 999999999;
+
+        if(count($mesasUsadas) > 1) {
+            $contador = 1;            
     
-    //         }
-    //         catch(Exception $e)
-    //         {
-    //             $mensaje = $e->getMessage();
-    //             $respuesta = array("Estado: " => "Error", "Mensaje: " => $mensaje);
-    //         }
-    //     }
+            for($i = 0; $i <= count($mesasUsadas); $i++) {
+                if($mesasUsadas[$i+1] == -1) {
+                    if($contador < $cantidad) {
+                        $cantidad = $contador;
+                        $mesaMenosUsada = array("id" => $mesasUsadas[$i], "cantidad" => $cantidad);     
+                    } 
+                    break;            
+                }
+
+                if($mesasUsadas[$i+1] == $mesasUsadas[$i])
+                    $contador++;
+
+                else {
+                    if($contador < $cantidad) {
+                        $cantidad = $contador;
+                        $mesaMenosUsada = array("id" => $mesasUsadas[$i], "cantidad" => $cantidad);       
+                    }   
+                    $contador = 1;                 
+                }  
+            }
+        }
+        else
+            $mesaMenosUsada = -1;
+
+        return $mesaMenosUsada;
+    }
+    //OK
+    public function LaQueMasFacturo($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
+        $factura = new App\Models\Factura;
+
+        try {
+            if( $fecha != "") {         
+                $fecha = strtotime($fecha);
+                $fecha = date('Y-m-d H:i:s' , $fecha); 
+
+                $mesaFacturacion = $factura ->where('fecha', '=', $fecha)
+                                            ->selectRaw('id_mesa as id, SUM(total) as total')
+                                            ->groupBy('id_mesa')
+                                            ->get();
+            }
+            else{
+                $fecha_desde = strtotime($fecha_desde);
+                $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+                $fecha_hasta = strtotime($fecha_hasta);
+                $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+
+                $mesaFacturacion = $factura ->where('fecha', '>=', $fecha_desde)
+                                            ->where('fecha', '<=', $fecha_hasta)
+                                            ->selectRaw('id_mesa as id, SUM(total) as total')
+                                            ->groupBy('id_mesa')
+                                            ->get();
+            }
+
+            $facturacion = 0; 
+
+            if(count($mesaFacturacion) > 0) {
+                for($i = 0; $i < count($mesaFacturacion); $i++) {
+                    if($mesaFacturacion[$i]->total > $facturacion) {
+                        $facturacion = $mesaFacturacion[$i]->total;
+                        $respuesta = array("Mesa: " => $mesaFacturacion[$i]->id, "Facturacion: " => "$" . $facturacion);
+                    }
+                }
+            }
+            else
+                $respuesta = array("Estado: " => "Error", "Mensaje: " => "No hubo movimientos");
         
-    //     return $response->withJson($respuesta, 200);
-    // }
-
-    // public function LaQueMenosFacturo($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $factura = new App\Models\Factura;
-    //     $mesa = new App\Models\Mesa;
-    //     $mesas = $mesa->all();
-    //     $idMesas = [];
-
-    //     for($i = 0; $i < count($mesas); $i++)
-    //     {
-    //         $idMesas[] = $mesas[$i]->id;
-    //     }
-
-    //     if($fecha != 0)
-    //     {         
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha); 
-
-    //         try
-    //         {                
-    //             $mesasFacturacion = $factura->where('fecha', '=', $fecha)
-    //                                        ->selectRaw('id_mesa as id, SUM(total) as total')
-    //                                        ->groupBy('id_mesa')->get();
-
-    //             $mesaSinFacturacion = -1;                           
-
-    //             //Recorro todas las mesas existentes para ver si alguna no se utilizo
-    //             for($i = 0; $i < count($idMesas); $i++)
-    //             {
-    //                 $mesaUsada = false;
-
-    //                 for($j = 0; $j < count($mesasFacturacion); $j++)
-    //                 {
-    //                     if($idMesas[$i] == $mesasFacturacion[$j]->id)
-    //                     {
-    //                         $mesaUsada = true;
-    //                         break;
-    //                     }
-    //                 }
-    //                 if(!$mesaUsada)
-    //                 {
-    //                     $mesaSinFacturacion = $idMesas[$i];
-    //                     break;
-    //                 }
-    //             }  
-                
-    //             if($mesaSinFacturacion == -1)
-    //             {
-    //                 $facturacion = 999999999999; 
+        }
+        catch(Exception $e) {
+            $respuesta = array("Estado: " => "Error", "Mensaje: " => $e->getMessage());
+        }
     
-    //                 if(count($mesasFacturacion) > 0)
-    //                 {
-    //                     for($i = 0; $i < count($mesasFacturacion); $i++)
-    //                     {
-    //                         if($mesasFacturacion[$i]->total < $facturacion)
-    //                         {
-    //                             $facturacion = $mesasFacturacion[$i]->total;
-    //                             $respuesta = array("Mesa: " => $mesasFacturacion[$i]->id, "Facturacion: " => "$" . $facturacion);
-    //                         }
-    //                     }
-    //                 }
-    //                 else
-    //                     $respuesta = array("Mesa: " => "n/a", "Mensaje: " => "No hubo movimientos");
-    //             }
-    //             else
-    //                 $respuesta = array("Mesa: " => $mesaSinFacturacion, "Mensaje: " => "Sin facturacion");
-    //         }
-    //         catch(Exception $e)
-    //         {
-    //             $mensaje = $e->getMessage();
-    //             $respuesta = array("Estado: " => "Error", "Mensaje: " => $mensaje);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+        return $response->withJson($respuesta, 200);
+    }
+    //OK
+    public function LaQueMenosFacturo($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
 
-    //         try
-    //         {                
-    //             $mesasFacturacion = $factura->where('fecha', '>=', $fecha_desde)
-    //                                         ->where('fecha', '<=', $fecha_hasta)
-    //                                         ->selectRaw('id_mesa as id, SUM(total) as total')
-    //                                         ->groupBy('id_mesa')->get();
+        $factura = new App\Models\Factura;
+        $mesa = new App\Models\Mesa;
 
-    //             $mesaSinFacturacion = -1;                           
+        $mesas = $mesa->all();
+        $idMesas = [];
 
-    //             //Recorro todas las mesas existentes para ver si alguna no se utilizo
-    //             for($i = 0; $i < count($idMesas); $i++)
-    //             {
-    //                 $mesaUsada = false;
+        for($i = 0; $i < count($mesas); $i++)
+            $idMesas[] = $mesas[$i]->id;
 
-    //                 for($j = 0; $j < count($mesasFacturacion); $j++)
-    //                 {
-    //                     if($idMesas[$i] == $mesasFacturacion[$j]->id)
-    //                     {
-    //                         $mesaUsada = true;
-    //                         break;
-    //                     }
-    //                 }
-    //                 if(!$mesaUsada)
-    //                 {
-    //                     $mesaSinFacturacion = $idMesas[$i];
-    //                     break;
-    //                 }
-    //             }  
+        try {   
+            if($fecha != "") {         
+                $fecha = strtotime($fecha);
+                $fecha = date('Y-m-d H:i:s' , $fecha); 
+     
+                $mesasFacturacion = $factura->where('fecha', '=', $fecha)
+                                            ->selectRaw('id_mesa as id, SUM(total) as total')
+                                            ->groupBy('id_mesa')
+                                            ->get();
+            }
+            else{
+                $fecha_desde = strtotime($fecha_desde);
+                $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+                $fecha_hasta = strtotime($fecha_hasta);
+                $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+                $mesasFacturacion = $factura->where('fecha', '>=', $fecha_desde)
+                                            ->where('fecha', '<=', $fecha_hasta)
+                                            ->selectRaw('id_mesa as id, SUM(total) as total')
+                                            ->groupBy('id_mesa')
+                                            ->get();
+            }
+
+            $mesaSinFacturacion = -1;                           
+
+            //Recorro todas las mesas existentes para ver si alguna no se utilizo
+            for($i = 0; $i < count($idMesas); $i++) {
+                $mesaUsada = false;
+
+                for($j = 0; $j < count($mesasFacturacion); $j++) {
+                    if($idMesas[$i] == $mesasFacturacion[$j]->id) {
+                        $mesaUsada = true;
+                        break;
+                    }
+                }
+                if(!$mesaUsada) {
+                    $mesaSinFacturacion = $idMesas[$i];
+                    break;
+                }
+            }  
                 
-    //             if($mesaSinFacturacion == -1)
-    //             {
-    //                 $facturacion = 999999999999; 
-    
-    //                 if(count($mesasFacturacion) > 0)
-    //                 {
-    //                     for($i = 0; $i < count($mesasFacturacion); $i++)
-    //                     {
-    //                         if($mesasFacturacion[$i]->total < $facturacion)
-    //                         {
-    //                             $facturacion = $mesasFacturacion[$i]->total;
-    //                             $respuesta = array("Mesa: " => $mesasFacturacion[$i]->id, "Facturacion: " => "$" . $facturacion);
-    //                         }
-    //                     }
-    //                 }
-    //                 else
-    //                     $respuesta = array("Mesa: " => "Sin informacion", "Mensaje: " => "No hubo movimientos");
-    //             }
-    //             else
-    //                 $respuesta = array("Mesa: " => $mesaSinFacturacion, "Mensaje: " => "Sin facturacion");
-    //         }
-    //         catch(Exception $e)
-    //         {
-    //             $mensaje = $e->getMessage();
-    //             $respuesta = array("Estado: " => "Error", "Mensaje: " => $mensaje);
-    //         }
-    //     }
-    //     return $response->withJson($respuesta, 200);
-    // }
+            if($mesaSinFacturacion == -1) {
+                $facturacion = 999999999999; 
 
-    // public function FacturaMayorImporte($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $factura = new App\Models\Factura;
-    //     $respuesta;
+                if(count($mesasFacturacion) > 0) {
+                    for($i = 0; $i < count($mesasFacturacion); $i++) {
+                        if($mesasFacturacion[$i]->total < $facturacion) {
+                            $facturacion = $mesasFacturacion[$i]->total;
+                            $respuesta = array("Mesa: " => $mesasFacturacion[$i]->id, "Facturación: " => "$" . $facturacion);
+                        }
+                    }
+                }
+                else
+                    $respuesta = array("Mesa: " => "n/a", "Mensaje: " => "No hubo movimientos.");
+            }
+            else
+                $respuesta = array("Mesa: " => $mesaSinFacturacion, "Mensaje: " => "Sin facturación.");
+        }
+        catch(Exception $e) {
+            $respuesta = array("Estado: " => "Error", "Mensaje: " => $e->getMessage());
+        }
+        return $response->withJson($respuesta, 200);
+    }
 
-    //     try
-    //     {
-    //         if($fecha != 0)
-    //         {         
-    //             $fecha = strtotime($fecha);
-    //             $fecha = date('Y-m-d H:i:s' , $fecha);
+    public function FacturaMayorImporte($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
+
+        $factura = new App\Models\Factura;
+        $respuesta;
+
+        try {
+            if($fecha != "") {         
+                $fecha = strtotime($fecha);
+                $fecha = date('Y-m-d H:i:s', $fecha);
                 
-    //             $facturasMayorImporte = $factura->where('fecha', '=', $fecha)
-    //                                             ->selectRaw( 'id_mesa, Max(total) as "mayorImporte"')
-    //                                             ->groupBy('id_mesa')->get();
+                $facturasMayorImporte = $factura->where('fecha', '=', $fecha)
+                                                ->selectRaw( 'id_mesa, Max(total) as "mayorImporte"')
+                                                ->groupBy('id_mesa')
+                                                ->get();
+            }
+            else {
+                $fecha_desde = strtotime($fecha_desde);
+                $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+                $fecha_hasta = strtotime($fecha_hasta);
+                $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
-    //             $importeMayor = 0;
+                $facturasMayorImporte = $factura->where('fecha', '>=', $fecha_desde)
+                                                ->where('fecha', '<=', $fecha_hasta)
+                                                ->selectRaw( 'id_mesa, Max(total) as "mayorImporte"')
+                                                ->groupBy('id_mesa')
+                                                ->get();
+            }
 
-    //             if(count($facturasMayorImporte) > 0)
-    //             {
-    //                 for($i = 0; $i < count($facturasMayorImporte); $i++)
-    //                 {
-    //                     if($facturasMayorImporte[$i]->mayorImporte > $importeMayor)
-    //                     {
-    //                         $importeMayor = $facturasMayorImporte[$i]->mayorImporte;
-    //                         $respuesta = array("Mesa" => $facturasMayorImporte[$i]->id_mesa, "Importe" => $importeMayor);
-    //                     }
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 $respuesta = array("Mesa" => "Sin informacion", "Importe" => "No hubo facturacion");
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $fecha_desde = strtotime($fecha_desde);
-    //             $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //             $fecha_hasta = strtotime($fecha_hasta);
-    //             $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+            $importeMayor = 0;
 
-    //             $facturasMayorImporte = $factura->where('fecha', '>=', $fecha_desde)
-    //                                             ->where('fecha', '<=', $fecha_hasta)
-    //                                             ->selectRaw( 'id_mesa, Max(total) as "mayorImporte"')
-    //                                             ->groupBy('id_mesa')->get();
+            if(count($facturasMayorImporte) > 0) {
+                for($i = 0; $i < count($facturasMayorImporte); $i++) {
+                    if($facturasMayorImporte[$i]->mayorImporte > $importeMayor) {
+                        $importeMayor = $facturasMayorImporte[$i]->mayorImporte;
+                        $respuesta = array("Mesa" => $facturasMayorImporte[$i]->id_mesa, "Importe" => $importeMayor);
+                    }
+                }
+            }
+            else
+                $respuesta = array("Mesa" => "Sin información", "Importe" => "No hubo facturación");
+        }
+        catch(Exception $e) {
+            $respuesta = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
+        }       
 
-    //             $importeMayor = 0;
-
-    //             if(count($facturasMayorImporte) > 0)
-    //             {
-    //                 for($i = 0; $i < count($facturasMayorImporte); $i++)
-    //                 {
-    //                     if($facturasMayorImporte[$i]->mayorImporte > $importeMayor)
-    //                     {
-    //                         $importeMayor = $facturasMayorImporte[$i]->mayorImporte;
-    //                         $respuesta = array("Mesa" => $facturasMayorImporte[$i]->id_mesa, "Importe" => $importeMayor);
-    //                     }
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 $respuesta = array("Mesa" => "Sin informacion", "Importe" => "No hubo facturacion");
-    //             }
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $mensaje = $e->getMessage();
-    //         $respuesta = array("Estado" => "ERROR", "Mensaje" => $mensaje);
-    //     }       
-
-    //     return $response->withJson($respuesta, 200);
-    // }
+        return $response->withJson($respuesta, 200);
+    }
 
     // public function FacturaMenorImporte($request, $response, $args)
     // {
@@ -874,100 +778,7 @@ class MesaApi {
     //     } 
     // }
 
-    // static function BuscarMesaMasUsada($mesasUsadasDao)
-    // {
-    //     $mesasUsadas = [];
-        
-    //     for($i = 0; $i < count($mesasUsadasDao); $i++)
-    //     {
-    //         $mesasUsadas[] = $mesasUsadasDao[$i]->id_mesa;
-    //     }
-        
-    //     $mesasUsadas[] = -1;
-    //     $mesaMasUsada;
-    //     $cantidad = 0;
-
-    //     if(count($mesasUsadas) > 1)
-    //     {
-    //         $contador = 1;            
     
-    //         for($i = 0; $i <= count($mesasUsadas); $i++)
-    //         {
-    //             if($mesasUsadas[$i+1] == -1)
-    //             {
-    //                 if($contador > $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $mesaMasUsada = $mesasUsadas[$i];     
-    //                 } 
-    //                 break;            
-    //             }
 
-    //             if($mesasUsadas[$i+1] == $mesasUsadas[$i])
-    //             {
-    //                 $contador++;
-    //             }
-
-    //             else
-    //             {
-    //                 if($contador > $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $mesaMasUsada = $mesasUsadas[$i];       
-    //                 }   
-    //                 $contador = 1;                 
-    //             }  
-    //         }
-    //         echo 'Mesa mas usada: ' . $mesaMasUsada . "\n" . "Cantidad de veces: " . $cantidad . "\n";
-    //     }
-    //     else
-    //     {
-    //         echo 'Sin operaciones' . "\n";
-    //     }
-    // }
-
-    // static function BuscarMesaMenosUsada($mesasUsadasDao, $mesasUsadas)
-    // {       
-    //     $mesasUsadas[] = -1;
-    //     $mesaMenosUsada;
-    //     $cantidad = 999999999;
-
-    //     if(count($mesasUsadas) > 1)
-    //     {
-    //         $contador = 1;            
     
-    //         for($i = 0; $i <= count($mesasUsadas); $i++)
-    //         {
-    //             if($mesasUsadas[$i+1] == -1)
-    //             {
-    //                 if($contador < $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $mesaMenosUsada = array("id" => $mesasUsadas[$i], "cantidad" => $cantidad);     
-    //                 } 
-    //                 break;            
-    //             }
-
-    //             if($mesasUsadas[$i+1] == $mesasUsadas[$i])
-    //             {
-    //                 $contador++;
-    //             }
-
-    //             else
-    //             {
-    //                 if($contador < $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $mesaMenosUsada = array("id" => $mesasUsadas[$i], "cantidad" => $cantidad);       
-    //                 }   
-    //                 $contador = 1;                 
-    //             }  
-    //         }
-    //     }
-    //     else
-    //     {
-    //         $mesaMenosUsada = -1;
-    //     }
-    //     return $mesaMenosUsada;
-    // }
 }

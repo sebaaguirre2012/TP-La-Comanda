@@ -250,277 +250,198 @@ class PedidoApi {
         else
             echo 'No hay pedidos cancelados.';
     }
+    //TODO
+    public function LoMasVendido($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
 
+        $pedido = new App\Models\Pedido;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-
-    // public function PedidosRetrasados($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-
-    //     $pedido = new App\Models\Pedido;
-
-    //     if($fecha != 0)
-    //     {
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha);
+        if($fecha != "") {         
+            $fecha = strtotime($fecha);
+            $fecha = date('Y-m-d H:i:s' , $fecha);
             
-    //         $pedidosDao = $pedido->where('id_estadoPedido', '=', 3)
-    //                              ->where('fecha', '=', $fecha)
-    //                              ->get();
+            $productosVendidos = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
+                                        ->where('pedidos.fecha', '=', $fecha)
+                                        ->select('pedidos.id_producto', 'productos.nombre')
+                                        ->orderBy('pedidos.id_producto')
+                                        ->get();        
+        }
+        else {
+            $fecha_desde = strtotime($fecha_desde);
+            $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+            $fecha_hasta = strtotime($fecha_hasta);
+            $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
-    //         if(!$pedidosDao->isEmpty())
-    //         {
-    //             for($i = 0; $i < count($pedidosDao); $i++)
-    //             {           
-    //                 $entregaDao = $pedidosDao[$i]->horaEntrega;
-    //                 $entregaEstimadaDao = $pedidosDao[$i]->horaEntregaEstimada;
-    //                 $horaEntrega = new DateTime($entregaDao,new DateTimeZone('America/Argentina/Buenos_Aires'));
-    //                 $horaEntregaEstimada = new DateTime($entregaEstimadaDao ,new DateTimeZone('America/Argentina/Buenos_Aires'));
+            $productosVendidos = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
+                                        ->where('pedidos.fecha', '>=', $fecha_desde)
+                                        ->where('pedidos.fecha', '<=', $fecha_hasta)
+                                        ->select('pedidos.id_producto', 'productos.nombre', 'pedidos.cantidad')
+                                        ->orderBy('pedidos.id_producto')
+                                        ->get();
+        }   
+        PedidoApi::ProductoMasVendido($productosVendidos);
+    }
+    //TODO
+    static function ProductoMasVendido($productosVendidosDao) {
+        $productosVendidos = [];
+    
+        for($i = 0; $i < count($productosVendidosDao); $i++)
+            $productosVendidos[] = $productosVendidosDao[$i]->nombre;
 
-    //                 if($horaEntrega > $horaEntregaEstimada)
-    //                     echo 'Codigo de pedido: ' . $pedidosDao[$i]->codigo . ". Hora de entrega estimada: " . $pedidosDao[$i]->horaEntregaEstimada . ". Hora de entrega: " . $pedidosDao[$i]->horaEntrega . "\n";
-    //             }
-    //         }
-    //         else
-    //         {
-    //             echo 'No hay pedidos retrasados';
-    //         }
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+        $productosVendidos[] = -1;
+        $productoMasVendido;
+        $cantidad = 0;
 
-    //         $pedidosDao = $pedido->where('id_estadoPedido', '=', 3)
-    //                              ->where('fecha', '>=', $fecha_desde)
-    //                              ->where('fecha', '<=', $fecha_hasta)
-    //                              ->get();
+        if(count($productosVendidos) > 1) {
+            $contador = 1;            
+    
+            for($i = 0; $i <= count($productosVendidos); $i++) {
+                if($productosVendidos[$i+1] == -1) {
+                    if($contador > $cantidad) {
+                        $cantidad = $contador;
+                        $productoMasVendido = $productosVendidos[$i];
+                        $contador = 1;        
+                    } 
+                    break;            
+                }
 
-    //         if(!$pedidosDao->isEmpty())
-    //         {
-    //             for($i = 0; $i < count($pedidosDao); $i++)
-    //             {           
-    //                 $entregaDao = $pedidosDao[$i]->horaEntrega;
-    //                 $entregaEstimadaDao = $pedidosDao[$i]->horaEntregaEstimada;
-    //                 $horaEntrega = new DateTime($entregaDao,new DateTimeZone('America/Argentina/Buenos_Aires'));
-    //                 $horaEntregaEstimada = new DateTime($entregaEstimadaDao ,new DateTimeZone('America/Argentina/Buenos_Aires'));
+                if($productosVendidos[$i+1] == $productosVendidos[$i])
+                    $contador++;
 
-    //                 if($horaEntrega > $horaEntregaEstimada)
-    //                     echo 'Codigo de pedido: ' . $pedidosDao[$i]->codigo . ". Hora de entrega estimada: " . $pedidosDao[$i]->horaEntregaEstimada . ". Hora de entrega: " . $pedidosDao[$i]->horaEntrega . "\n";
-    //             }
-    //         }
-    //         else
-    //         {
-    //             echo 'No hay pedidos retrasados';
-    //         }
-    //     }
-    // }
+                else {
+                    if($contador > $cantidad) {
+                        $cantidad = $contador;
+                        $productoMasVendido = $productosVendidos[$i];
+                        $contador = 1;        
+                    }                    
+                }  
+            }
+            echo    'Producto mas vendido: ' . $productoMasVendido . PHP_EOL . 
+                    'Cantidad de pedidos: ' . $cantidad . PHP_EOL;
+        }
+        else
+            echo 'Sin operaciones' . PHP_EOL;
+    }
+    //TODO
+    public function LoMenosVendido($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
 
-    // public function LoMasVendido($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
+        $pedido = new App\Models\Pedido;
 
-    //     $pedido = new App\Models\Pedido;
-
-    //     if($fecha != 0)
-    //     {         
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha);
+        if($fecha != "") {         
+            $fecha = strtotime($fecha);
+            $fecha = date('Y-m-d H:i:s' , $fecha);
             
-    //         $productosVendidosDao = $pedido->join('productos', 'pedidos.id_producto', '=', 'productos.id')
-    //         ->where('pedidos.fecha', '=', $fecha)
-    //         ->select('pedidos.id_producto', 'productos.nombre')
-    //         ->orderBy('pedidos.id_producto')->get();
+            $productosVendidosDao = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
+                                            ->where('pedidos.fecha', '=', $fecha)
+                                            ->select('pedidos.id_producto', 'productos.nombre')
+                                            ->orderBy('pedidos.id_producto')
+                                            ->get();         
+        }
+        else {
+            $fecha_desde = strtotime($fecha_desde);
+            $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+            $fecha_hasta = strtotime($fecha_hasta);
+            $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
-    //         PedidoApi::ProductoMasVendido($productosVendidosDao);            
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+            $productosVendidosDao = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
+                                            ->where('pedidos.fecha', '>=', $fecha_desde)
+                                            ->where('pedidos.fecha', '<=', $fecha_hasta)
+                                            ->select('pedidos.id_producto', 'productos.nombre')
+                                            ->orderBy('pedidos.id_producto')
+                                            ->get();       
+        }
+        PedidoApi::ProductoMenosVendido($productosVendidosDao);       
+    }
+    //TODO
+    static function ProductoMenosVendido($productosVendidosDao) {
+        $productosVendidos = [];
+    
+        for($i = 0; $i < count($productosVendidosDao); $i++)
+            $productosVendidos[] = $productosVendidosDao[$i]->nombre;
 
-    //         $productosVendidosDao = $pedido->join('productos', 'pedidos.id_producto', '=', 'productos.id')
-    //         ->where('pedidos.fecha', '>=', $fecha_desde)
-    //         ->where('pedidos.fecha', '<=', $fecha_hasta)
-    //         ->select('pedidos.id_producto', 'productos.nombre')
-    //         ->orderBy('pedidos.id_producto')->get();
+        $productosVendidos[] = -1;
+        $productoMenosVendido;
+        $cantidad = 999999999;
 
-    //         PedidoApi::ProductoMasVendido($productosVendidosDao);
-    //     }   
-    // }
+        if(count($productosVendidos) > 1) {
+            $contador = 1;            
+    
+            for($i = 0; $i <= count($productosVendidos); $i++) {
+                if($productosVendidos[$i+1] == -1) {
+                    if($contador < $cantidad) {
+                        $cantidad = $contador;
+                        $productoMenosVendido = $productosVendidos[$i];
+                        $contador = 1;        
+                    } 
+                    break;            
+                }
 
-    // public function LoMenosVendido($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
+                if($productosVendidos[$i+1] == $productosVendidos[$i])
+                    $contador++;
+                
+                else {
+                    if($contador < $cantidad) {
+                        $cantidad = $contador;
+                        $productoMenosVendido = $productosVendidos[$i];
+                        $contador = 1;        
+                    }                    
+                }  
+            }
+            echo    'Producto menos vendido: ' . $productoMenosVendido . PHP_EOL . 
+                    'Cantidad de pedidos: ' . $cantidad . PHP_EOL;
+        }
+        else
+            echo 'No hay Pedidos' . PHP_EOL;
+    }
+    //TODO
+    public function PedidosRetrasados($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
 
-    //     $pedido = new App\Models\Pedido;
+        $pedido = new App\Models\Pedido;
 
-    //     if($fecha != 0)
-    //     {         
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha);
+        if($fecha != "") {
+            $fecha = strtotime($fecha);
+            $fecha = date('Y-m-d H:i:s' , $fecha);
             
-    //         $productosVendidosDao = $pedido->join('productos', 'pedidos.id_producto', '=', 'productos.id')
-    //                                         ->where('pedidos.fecha', '=', $fecha)
-    //                                         ->select('pedidos.id_producto', 'productos.nombre')
-    //                                         ->orderBy('pedidos.id_producto')->get();
+            $pedidosDao = $pedido->where('id_estado_pedido', '=', 3)
+                                 ->where('fecha', '=', $fecha)
+                                 ->get();
+        }
+        else {
+            $fecha_desde = strtotime($fecha_desde);
+            $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+            $fecha_hasta = strtotime($fecha_hasta);
+            $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
-    //             PedidoApi::ProductoMenosVendido($productosVendidosDao);          
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+            $pedidosDao = $pedido->where('id_estado_pedido', '=', 3)
+                                 ->where('fecha', '>=', $fecha_desde)
+                                 ->where('fecha', '<=', $fecha_hasta)
+                                 ->get();
+        }
 
-    //         $productosVendidosDao = $pedido->join('productos', 'pedidos.id_producto', '=', 'productos.id')
-    //                                         ->where('pedidos.fecha', '>=', $fecha_desde)
-    //                                         ->where('pedidos.fecha', '<=', $fecha_hasta)
-    //                                         ->select('pedidos.id_producto', 'productos.nombre')
-    //                                         ->orderBy('pedidos.id_producto')->get();
-            
-    //             PedidoApi::ProductoMenosVendido($productosVendidosDao);          
-    //         }
-    // }
+        if(!$pedidosDao->isEmpty()) {
+            for($i = 0; $i < count($pedidosDao); $i++) {           
+                $entregaDao = $pedidosDao[$i]->horaEntrega;
+                $entregaEstimadaDao = $pedidosDao[$i]->horaEntregaEstimada;
+                $horaEntrega = new DateTime($entregaDao,new DateTimeZone('America/Argentina/Buenos_Aires'));
+                $horaEntregaEstimada = new DateTime($entregaEstimadaDao ,new DateTimeZone('America/Argentina/Buenos_Aires'));
 
-    
+                if($horaEntrega > $horaEntregaEstimada){
+                    echo 'Codigo de pedido: ' . $pedidosDao[$i]->codigo . PHP_EOL .
+                        'Hora de entrega estimada: ' . $pedidosDao[$i]->horaEntregaEstimada . PHP_EOL .
+                        'Hora de entrega: ' . $pedidosDao[$i]->horaEntrega . PHP_EOL;
+                }
+            }
+        }
+        else
+            echo 'No hay pedidos retrasados.';
 
-    
-    // static function ProductoMasVendido($productosVendidosDao)
-    // {
-    //     $productosVendidos = [];
-    
-    //     for($i = 0; $i < count($productosVendidosDao); $i++)
-    //     {
-    //         $productosVendidos[] = $productosVendidosDao[$i]->nombre;
-    //     }
-
-    //     $productosVendidos[] = -1;
-    //     $productoMasVendido;
-    //     $cantidad = 0;
-
-    //     if(count($productosVendidos) > 1)
-    //     {
-    //         $contador = 1;            
-    
-    //         for($i = 0; $i <= count($productosVendidos); $i++)
-    //         {
-    //             if($productosVendidos[$i+1] == -1)
-    //             {
-    //                 if($contador > $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $productoMasVendido = $productosVendidos[$i];
-    //                     $contador = 1;        
-    //                 } 
-    //                 break;            
-    //             }
-
-    //             if($productosVendidos[$i+1] == $productosVendidos[$i])
-    //             {
-    //                 $contador++;
-    //             }
-
-    //             else
-    //             {
-    //                 if($contador > $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $productoMasVendido = $productosVendidos[$i];
-    //                     $contador = 1;        
-    //                 }                    
-    //             }  
-    //         }
-    //         echo 'Producto mas vendido: ' . $productoMasVendido . "\n" . "Cantidad de pedidos: " . $cantidad . "\n";
-    //     }
-    //     else
-    //     {
-    //         echo 'Sin operaciones' . "\n";
-    //     }
-    // }
-    
-    // static function ProductoMenosVendido($productosVendidosDao)
-    // {
-    //     $productosVendidos = [];
-    
-    //     for($i = 0; $i < count($productosVendidosDao); $i++)
-    //     {
-    //         $productosVendidos[] = $productosVendidosDao[$i]->nombre;
-    //     }
-
-    //     $productosVendidos[] = -1;
-    //     $productoMenosVendido;
-    //     $cantidad = 999999999;
-
-    //     if(count($productosVendidos) > 1)
-    //     {
-    //         $contador = 1;            
-    
-    //         for($i = 0; $i <= count($productosVendidos); $i++)
-    //         {
-    //             if($productosVendidos[$i+1] == -1)
-    //             {
-    //                 if($contador < $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $productoMenosVendido = $productosVendidos[$i];
-    //                     $contador = 1;        
-    //                 } 
-    //                 break;            
-    //             }
-
-    //             if($productosVendidos[$i+1] == $productosVendidos[$i])
-    //             {
-    //                 $contador++;
-    //             }
-
-    //             else
-    //             {
-    //                 if($contador < $cantidad)
-    //                 {
-    //                     $cantidad = $contador;
-    //                     $productoMenosVendido = $productosVendidos[$i];
-    //                     $contador = 1;        
-    //                 }                    
-    //             }  
-    //         }
-    //         echo 'Producto menos vendido: ' . $productoMenosVendido . "\n" . "Cantidad de pedidos: " . $cantidad . "\n";
-    //     }
-    //     else
-    //     {
-    //         echo 'Sin operaciones' . "\n";
-    //     }
-    // }
+    }
 }
