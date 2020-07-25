@@ -1,7 +1,6 @@
 <?php
 
-class MesaApi 
-{
+class MesaApi {
     //OK
     public function CargarMesa($request, $response, $args) {
         $codigo = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 3)), 0, 5);
@@ -18,173 +17,156 @@ class MesaApi
 
         return $response->withJson($respuesta, 200);
     } 
+    //OK
+    public function CambiarEstadoClienteEsperandoPedido($request, $response, $args) {
+        $parametros = $request->getParsedBody();
+        $codigo = $parametros['codigo'];
+        $mesa = new App\Models\Mesa;
+        $pedido = new App\Models\Pedido;
 
+        try {
+            $mesaActual = $mesa ->where('codigo', '=', $codigo)
+                                ->first();
 
+            if($mesaActual != null) {
+                if(!$mesaActual->id_estado) {
+                    $pedido ->where('id_mesa', '=', $mesaActual->id)
+                            ->whereNull('id_estado_mesa')
+                            ->update(['id_estado_mesa' => 1]);
+                    $mesaActual->id_estado = 1;
+                    $mesaActual->save();
+                    $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " con clientes esperando el pedido");
+                }
+                else
+                    $mensaje = array("Estado" => "ERROR", "Mensaje" => "La mesa ya tiene un estado asignado.");
+            }                                
+            else
+                $mensaje = array("Estado" => "ERROR", "Mensaje" => "No existe mesa con ese código.");
+        }
+        catch(Exception $e) {
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
+        }
 
+        return $response->withJson($mensaje, 200);
+    }
+    //OK
+    public function CambiarEstadoClienteComiendo($request, $response, $args) {
+        $parametros = $request->getParsedBody();
+        $codigo = $parametros['codigo'];
+        $mesa = new App\Models\Mesa;
+        $pedido = new App\Models\Pedido;
 
+        try {
+            $mesaActual = $mesa ->where('codigo', '=', $codigo)
+                                ->first();
+                                
+            if($mesaActual != null) {
+                if($mesaActual->id_estado == 1) {
+                    $pedido ->where('id_mesa', '=', $mesaActual->id)
+                            ->where('id_estado_mesa', '=', 1)
+                            ->update(['id_estado_mesa' => 2]);
 
+                    $mesaActual->id_estado = 2;
+                    $mesaActual->save();
+                    $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " con clientes comiendo.");
+                }
+                else
+                    $mensaje = array("Estado" => "ERROR", "Mensaje" => "No hay clientes esperando en esa mesa.");
+            }                                
+            else
+                $mensaje = array("Estado" => "ERROR", "Mensaje" => "No existe mesa con ese código.");
+        }
+        catch(Exception $e) {
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
+        }
 
+        return $response->withJson($mensaje, 200);
+    }
+    //Ok
+    public function CambiarEstadoClientePagando($request, $response, $args) {
+        $parametros = $request->getParsedBody();
+        $codigo = $parametros['codigo'];
+        $mesa = new App\Models\Mesa;
+        $pedido = new App\Models\Pedido;
+        
+        try {
+            $mesaActual = $mesa ->where('codigo', '=', $codigo)
+                                ->first();
 
+            if($mesaActual != null) {
+                if($mesaActual->id_estado == 2) {
+                    $pedidosMesaActual = $pedido->join('productos', 'pedidos.id_producto', '=', 'productos.id')  
+                                                ->where('pedidos.id_mesa', '=', $mesaActual->id)
+                                                ->where('pedidos.id_estado_mesa', '=', 2)
+                                                ->get();
+                    
+                    $totalFactura = 0;
 
+                    for($i = 0; $i < count($pedidosMesaActual); $i++) 
+                        $totalFactura += $pedidosMesaActual[$i]->precio * $pedidosMesaActual[$i]->cantidad;
 
+                    $factura = new App\Models\Factura;
+                    date_default_timezone_set("America/Argentina/Buenos_Aires");
+                    $fecha = date('Y-m-d');
 
+                    $factura->id_mesa = $mesaActual->id;
+                    $factura->total = $totalFactura;
+                    $factura->fecha = $fecha;
+                    $factura->save();
 
-    
-    // public function CambiarEstadoClienteEsperandoPedido($request, $response, $args)
-    // {
-    //     $parametros = $request->getParsedBody();
-    //     $codigo = $parametros['codigo'];
-    //     $mesa = new App\Models\Mesa;
-    //     $pedido = new App\Models\Pedido;
-    //     try
-    //     {
-    //         $mesaActual = $mesa->where('codigo', '=', $codigo)->first();
+                    $pedido ->where('id_mesa', '=', $mesaActual->id)
+                            ->where('id_estado_mesa', '=', 2)
+                            ->update(['id_estado_mesa' => 3]);
 
-    //         if(!$mesaActual->id_estado)
-    //         {
-    //             $pedido->where('id_mesa', '=', $mesaActual->id)
-    //             ->whereNull('id_estadoMesa')
-    //             ->update(['id_estadoMesa' => 1]);
-    //             $mesaActual->id_estado = 1;
-    //             $mesaActual->save();
-    //             $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " con clientes esperando el pedido");
-    //         }
-    //         else
-    //         {
-    //             $mensaje = array("Estado" => "ERROR", "Mensaje" => "La mesa ya tiene un estado asignado");
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $msj = $e->getMessage();
-    //         $mensaje = array("Estado" => "ERROR", "Mensaje" => $msj);
-    //     }
+                    $mesaActual->id_estado = 3;
+                    $mesaActual->save();
+                    $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " con clientes pagando.");
+                }
+                else
+                    $mensaje = array("Estado" => "ERROR", "Mensaje" => "Clientes esperando o comiendo.");
+            }                                
+            else
+                $mensaje = array("Estado" => "ERROR", "Mensaje" => "No existe mesa con ese código.");
+        }
+        catch(Exception $e) {
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
+        }
 
-    //     return $response->withJson($mensaje, 200);
-    // }
+        return $response->withJson($mensaje, 200);
+    }
+    //Ok
+    public function CambiarEstadoCerrada($request, $response, $args) {
+        $parametros = $request->getParsedBody();
+        $codigo = $parametros['codigo'];
+        $mesa = new App\Models\Mesa;
+        $pedido = new App\Models\Pedido;
 
-    // public function CambiarEstadoClienteComiendo($request, $response, $args)
-    // {
-    //     $parametros = $request->getParsedBody();
-    //     $codigo = $parametros['codigo'];
-    //     $mesa = new App\Models\Mesa;
-    //     $pedido = new App\Models\Pedido;
-    //     try
-    //     {
-    //         $mesaActual = $mesa->where('codigo', '=', $codigo)->first();
+        try {
+            $mesaActual = $mesa ->where('codigo', '=', $codigo)
+                                ->first();
 
-    //         if($mesaActual->id_estado == 1)
-    //         {
-    //             $pedido->where('id_mesa', '=', $mesaActual->id)
-    //             ->where('id_estadoMesa', '=', 1)
-    //             ->update(['id_estadoMesa' => 2]);
+            if($mesaActual != null) {
+                if($mesaActual->id_estado == 3) {
+                    $pedido ->where('id_mesa', '=', $mesaActual->id)
+                            ->where('id_estado_mesa', '=', 3)
+                            ->update(['id_estado_mesa' => 4]);
 
-    //             $mesaActual->id_estado = 2;
-    //             $mesaActual->save();
-    //             $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " con clientes comiendo");
-    //         }
-    //         else
-    //         {
-    //             $mensaje = array("Estado" => "ERROR", "Mensaje" => "La mesa ya tiene clientes comiendo");
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $msj = $e->getMessage();
-    //         $mensaje = array("Estado" => "ERROR", "Mensaje" => $msj);
-    //     }
+                    $mesaActual->id_estado = 4;
+                    $mesaActual->save();
+                    $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " cerrada.");
+                }
+                else
+                    $mensaje = array("Estado" => "ERROR", "Mensaje" => "La mesa no puede cerrarse.");
+            }
+            else
+                $mensaje = array("Estado" => "ERROR", "Mensaje" => "No existe mesa con ese código.");         
+        }
+        catch(Exception $e) {
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
+        }
 
-    //     return $response->withJson($mensaje, 200);
-    // }
-
-    // public function CambiarEstadoClientePagando($request, $response, $args)
-    // {
-    //     $parametros = $request->getParsedBody();
-    //     $codigo = $parametros['codigo'];
-    //     $mesa = new App\Models\Mesa;
-    //     $pedido = new App\Models\Pedido;
-    //     try
-    //     {
-    //         $mesaActual = $mesa->where('codigo', '=', $codigo)->first();
-
-    //         if($mesaActual->id_estado == 2)
-    //         {
-    //             $pedidosMesaActual = $pedido->join('productos', 'pedidos.id_producto', '=', 'productos.id')  
-    //             ->where('pedidos.id_mesa', '=', $mesaActual->id)
-    //             ->where('pedidos.id_estadoMesa', '=', 2)->get();
-                
-    //             $totalFactura = 0;
-
-    //             for($i = 0; $i < count($pedidosMesaActual); $i++)
-    //             {
-    //                 $totalFactura += $pedidosMesaActual[$i]->precio * $pedidosMesaActual[$i]->cantidad;
-    //             }
-
-    //             $factura = new App\Models\Factura;
-    //             date_default_timezone_set("America/Argentina/Buenos_Aires");
-    //             $fecha = date('Y-m-d');
-
-    //             $factura->id_mesa = $mesaActual->id;
-    //             $factura->total = $totalFactura;
-    //             $factura->fecha = $fecha;
-    //             $factura->save();
-
-    //             $pedido->where('id_mesa', '=', $mesaActual->id)
-    //             ->where('id_estadoMesa', '=', 2)
-    //             ->update(['id_estadoMesa' => 3]);
-
-    //             $mesaActual->id_estado = 3;
-    //             $mesaActual->save();
-    //             $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " con clientes pagando");
-    //         }
-    //         else
-    //         {
-    //             $mensaje = array("Estado" => "ERROR", "Mensaje" => "Los clientes ya estan pagando su pedido");
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $msj = $e->getMessage();
-    //         $mensaje = array("Estado" => "ERROR", "Mensaje" => $msj);
-    //     }
-
-    //     return $response->withJson($mensaje, 200);
-    // }
-
-    // public function CambiarEstadoCerrada($request, $response, $args)
-    // {
-    //     $parametros = $request->getParsedBody();
-    //     $codigo = $parametros['codigo'];
-    //     $mesa = new App\Models\Mesa;
-    //     $pedido = new App\Models\Pedido;
-
-    //     try
-    //     {
-    //         $mesaActual = $mesa->where('codigo', '=', $codigo)->first();
-
-    //         if($mesaActual->id_estado == 3)
-    //         {
-    //             $pedido->where('id_mesa', '=', $mesaActual->id)
-    //             ->where('id_estadoMesa', '=', 3)
-    //             ->update(['id_estadoMesa' => 4]);
-
-    //             $mesaActual->id_estado = 4;
-    //             $mesaActual->save();
-    //             $mensaje = array("Mensaje" => "OK", "Estado" => "Mesa " . $mesaActual->id . " cerrada");
-    //         }
-    //         else
-    //         {
-    //             $mensaje = array("Estado" => "ERROR", "Mensaje" => "La mesa ya fue cerrada. Estado incorrecto");
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $msj = $e->getMessage();
-    //         $mensaje = array("Estado" => "ERROR", "Mensaje" => $msj);
-    //     }
-
-    //     return $response->withJson($mensaje, 200);
-    // }
+        return $response->withJson($mensaje, 200);
+    }
 
     // public function LaMasUsada($request, $response, $args)
     // {

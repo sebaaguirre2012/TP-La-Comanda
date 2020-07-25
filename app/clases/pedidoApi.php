@@ -63,7 +63,7 @@ class PedidoApi {
                                     ->where('pedidos.id_estado_pedido', '=', 1)
                                     ->get();
         
-        if ($pedidosPendientes != null) {
+        if ($pedidosPendientes != null && count($pedidosPendientes) > 1) {
             for($i = 0; $i < count($pedidosPendientes); $i++) {
                 echo    PHP_EOL . "Producto: " . $pedidosPendientes[$i]->nombre .    
                         PHP_EOL . "Cantidad: " . $pedidosPendientes[$i]->cantidad .                         
@@ -168,8 +168,7 @@ class PedidoApi {
         return $response->withJson($mensaje, 200);
     }
     //TODO
-    public function ServirPedido($request, $response, $args)
-    {
+    public function ServirPedido($request, $response, $args) {
         $payload = $request->getAttribute("payload")["Payload"];
         $infoEmpleado = $payload->data;
         $id = $infoEmpleado->id;
@@ -189,7 +188,68 @@ class PedidoApi {
         }       
         return $response->withJson($mensaje, 200);
     }
+    //OK
+    public function CancelarPedido($request, $response, $args) {
+        try {
+            $parametros = $request->getParsedBody();
+            $codigo = $parametros['codigo'];
+            
+            $pedido = new App\Models\Pedido;
+            $pedidoActual = $pedido ->where('codigo', '=', $codigo)
+                                    ->first();
 
+            if ($pedidoActual != null){
+                $pedidoActual->id_estado_pedido = 4;
+                $pedidoActual->save();
+                $mensaje = array("Estado" => "Ok", "Mensaje" => "Pedido " . $codigo . " cancelado.");
+            }
+            else
+                $mensaje = array("Estado" => "ERROR", "Mensaje" => "Mo hay pedidos con ese código.");            
+        }
+        catch(Exception $e) {
+            $error = $e->getMessage();
+            $mensaje = array("Estado" => "Error", "Mensaje" => $error);
+        }
+
+        return $response->withJson($mensaje, 200);        
+    }
+    //OK
+    public function PedidosCancelados($request, $response, $args) {
+        $fecha = $_GET['fecha'];
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
+
+        $pedido = new App\Models\Pedido;
+
+        if($fecha != "") {         
+            $fecha = strtotime($fecha);
+            $fecha = date('Y-m-d H:i:s' , $fecha); 
+
+            $pedidosCancelados = $pedido->where('pedidos.id_estado_pedido', '=', '4')
+                                        ->where('pedidos.fecha', '=', $fecha)
+                                        ->get();
+        }
+        else {
+            $fecha_desde = strtotime($fecha_desde);
+            $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+            $fecha_hasta = strtotime($fecha_hasta);
+            $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+
+            $pedidosCancelados = $pedido->where('pedidos.id_estado_pedido', '=', '4')
+                                        ->where('pedidos.fecha', '>=', $fecha_desde)
+                                        ->where('pedidos.fecha', '<=', $fecha_hasta)
+                                        ->get();
+        }
+        
+        if(count($pedidosCancelados) > 0) {
+            echo 'Pedidos cancelados' . PHP_EOL . PHP_EOL;
+
+            for($i = 0; $i < count($pedidosCancelados); $i++)
+                    echo 'Codigo de pedido: ' . $pedidosCancelados[$i]->codigo . PHP_EOL;
+        }
+        else
+            echo 'No hay pedidos cancelados.';
+    }
 
 
 
@@ -355,87 +415,9 @@ class PedidoApi {
     //         }
     // }
 
-    // public function CancelarPedido($request, $response, $args)
-    // {
-    //     try
-    //     {
-    //         $parametros = $request->getParsedBody();
-    //         $codigo = $parametros['codigo'];
-            
-    //         $pedido = new App\Models\Pedido;
-    //         $pedidoActual = $pedido->where('codigo', '=', $codigo)->first();
-    //         $pedidoActual->id_estadoPedido = 4;
-    //         $pedidoActual->save();
-    //         $mensaje = array("Estado" => "Ok", "Mensaje" => "Pedido " . $codigo . " cancelado");
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $error = $e->getMessage();
-    //         $mensaje = array("Estado" => "Error", "Mensaje" => $error);
-    //     }
+    
 
-    //     return $response->withJson($mensaje, 200);        
-    // }
-
-    // public function PedidosCancelados($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-
-    //     $pedido = new App\Models\Pedido;
-
-    //     if($fecha != 0)
-    //     {         
-    //         $fecha = strtotime($fecha);
-    //         $fecha = date('Y-m-d H:i:s' , $fecha); 
-
-    //         $pedidosCancelados = $pedido->where('pedidos.id_estadoPedido', '=', '4')
-    //                                     ->where('pedidos.fecha', '=', $fecha)
-    //                                     ->get();
-
-    //         if(count($pedidosCancelados) > 0)
-    //         {
-    //             echo 'Pedidos cancelados' . "\n";
-
-    //             for($i = 0; $i < count($pedidosCancelados); $i++)
-    //             {
-    //                 echo 'Codigo de pedido: ' . $pedidosCancelados[$i]->codigo . "\n";
-    //             }
-    //         }
-    //         else
-    //         {
-    //             echo 'No se registran pedidos cancelados';
-    //         }
-    //     }
-    //     else
-    //     {
-    //         $fecha_desde = strtotime($fecha_desde);
-    //         $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //         $fecha_hasta = strtotime($fecha_hasta);
-    //         $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
-
-    //         $pedidosCancelados = $pedido->where('pedidos.id_estadoPedido', '=', '4')
-    //                                     ->where('pedidos.fecha', '>=', $fecha_desde)
-    //                                     ->where('pedidos.fecha', '<=', $fecha_hasta)
-    //                                     ->get();
- 
-    //         if(count($pedidosCancelados) > 0)
-    //         {
-    //             echo 'Pedidos cancelados' . "\n";
-
-    //             for($i = 0; $i < count($pedidosCancelados); $i++)
-    //             {
-    //                 echo 'Codigo de pedido: ' . $pedidosCancelados[$i]->codigo . "\n";
-    //             }
-    //         }
-    //         else
-    //         {
-    //             echo 'No se registran pedidos cancelados';
-    //         }
-    //     }
-    // }
-
+    
     // static function ProductoMasVendido($productosVendidosDao)
     // {
     //     $productosVendidos = [];

@@ -15,10 +15,12 @@ class EmpleadoApi {
         $horaActual = new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires'));
 
         try {            
-            $empleado = $empleadoDao->where([['usuario', '=', $usuario], ['clave', '=', $clave]])->first();
+            $empleado = $empleadoDao->where([['usuario', '=', $usuario], ['clave', '=', $clave]])
+                                    ->first();
 
             if($empleado) {
-                $tipoEmpleado = $tipoEmpleadoDao->where('id', '=', $empleado->id_tipo_empleado)->first();
+                $tipoEmpleado = $tipoEmpleadoDao->where('id', '=', $empleado->id_tipo_empleado)
+                                                ->first();
 
                 if ($empleado->estado == 'S')
                     $mensaje = array("Mensaje" => "El empleado se encuentra suspendido.");
@@ -90,8 +92,8 @@ class EmpleadoApi {
         try {
             $empleado = new App\Models\Empleado;
             
-            //TODO
-            $auiliar = $empleado->where('usuario', '=', $usuario)->first();
+            $auiliar = $empleado->where('usuario', '=', $usuario)
+                                ->first();
             if($auiliar != null)
                 $mensaje = array("Estado" => "Ok", "Mensaje" => "El nombre de usuario ya existe.");
                 
@@ -243,37 +245,21 @@ class EmpleadoApi {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
         $fecha_hasta = $_GET['fecha_hasta'];
-        $empleado = $_GET['empleado'];
+        $usuario = $_GET['empleado'];
 
         $operacion = new App\Models\Operacion;
         $empleadoDao = new App\Models\Empleado;
 
-        if($fecha != 0) {         
+        if($fecha != "") {         
             $fecha = strtotime($fecha);
             $fecha = date('Y-m-d H:i:s' , $fecha);             
 
             $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
-                                    ->where('operaciones.fecha', '=', $fecha)
-                                    ->where('empleados.usuario', '=', $empleado)
-                                    ->where('empleados.estado', '!=', 'E')
-                                    ->select('empleados.id as idEmpleado', 'empleados.usuario')->get();
-
-            $empleados = $empleadoDao->all();
-            $existe = false;
-
-            for($i = 0; $i < count($empleados); $i++) {
-                if($empleados[$i]->usuario == $empleado) {
-                    if(count($operaciones) > 0)
-                        echo 'Empleado: ' . $empleado . ' realizó ' . count($operaciones) . ' operaciones.';
-                    else
-                        echo $empleado . ' No registra operaciones.';
-
-                    $existe = true;
-                    break;    
-                }
-            }
-            if(!$existe)
-                echo 'Nombre de empleado inexistente.';
+                                     ->where('operaciones.fecha', '=', $fecha)
+                                     ->where('empleados.usuario', '=', $empleado)
+                                     ->where('empleados.estado', '!=', 'E')
+                                     ->select('empleados.id as idEmpleado', 'empleados.usuario')
+                                     ->get();
         }
         else {
             $fecha_desde = strtotime($fecha_desde);
@@ -282,28 +268,22 @@ class EmpleadoApi {
             $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
             $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
-                                    ->where('operaciones.fecha', '>=', $fecha_desde)
-                                    ->where('operaciones.fecha', '<=', $fecha_hasta)
-                                    ->where('empleados.estado', '!=', 'E')
-                                    ->where('empleados.usuario', '=', $empleado)
-                                    ->select('empleados.id as idEmpleado', 'empleados.usuario')->get();
-
-            $empleados = $empleadoDao->all();
-            $existe = false;
-
-            for($i = 0; $i < count($empleados); $i++) {
-                if($empleados[$i]->usuario == $empleado) {
-                    if(count($operaciones) > 0)
-                        echo 'Empleado: ' . $empleado . ' realizó ' . count($operaciones) . ' operaciones.';
-                    else
-                        echo $empleado . ' No registra operaciones.';
-                    $existe = true;
-                    break;    
-                }
-            }
-            if(!$existe)
-                echo 'Nombre de empleado inexistente.';         
+                                     ->where('operaciones.fecha', '>=', $fecha_desde)
+                                     ->where('operaciones.fecha', '<=', $fecha_hasta)
+                                     ->where('empleados.estado', '!=', 'E')
+                                     ->where('empleados.usuario', '=', $usuario)
+                                     ->select('empleados.id as idEmpleado', 'empleados.usuario')
+                                     ->get();
         }
+
+        $empleado = $empleadoDao->where('usuario', '=', $usuario)
+                                ->first();
+
+        if ($empleado != null)  
+            echo 'El empleado ' . $empleado->usuario . ' realizó ' . count($operaciones) . ' operaciones';
+
+        else
+            echo 'No existe empleado con ese nombre.';
     }
     //OK
     public function CantidadOperacionesPorSector($request, $response, $args) {
@@ -325,30 +305,8 @@ class EmpleadoApi {
             $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
                                      ->where('operaciones.fecha', '=', $fecha)
                                      ->where('empleados.estado', '!=', 'E')
-                                     ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')->get();
-
-            for($i = 0; $i < count($operaciones); $i++) {
-                if($operaciones[$i]->id_sector == 1)
-                    $operacionesLocal++;
-                if($operaciones[$i]->id_sector == 2)
-                    $operacionesSalon++;
-                if($operaciones[$i]->id_sector == 3)
-                    $operacionesCocina++;
-                if($operaciones[$i]->id_sector == 4)
-                    $operacionesBarraTragos++;
-                if($operaciones[$i]->id_sector == 5)
-                    $operacionesBarraCervezas++;
-                 if($operaciones[$i]->id_sector == 6)
-                    $operacionesCandyBar++;
-            }
-
-            echo    'Cantidad de Operaciones por sector' . PHP_EOL . PHP_EOL .
-                    'Local: ' . $operacionesLocal . ' operaciones.' . PHP_EOL .
-                    'Salon: ' . $operacionesSalon . ' operaciones.' . PHP_EOL .
-                    'Cocina: ' . $operacionesCocina . ' operaciones.' . PHP_EOL .
-                    'Barra de tragos y vinos: ' . $operacionesBarraTragos . ' operaciones.' . PHP_EOL .
-                    'Barra de cervezas: ' . $operacionesBarraCervezas . ' operaciones.' . PHP_EOL .                    
-                    'Candy Bar: ' . $operacionesCandyBar . ' operaciones.' . PHP_EOL;
+                                     ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')
+                                     ->get();
         }
         else {
             $fecha_desde = strtotime($fecha_desde);
@@ -360,101 +318,67 @@ class EmpleadoApi {
                                      ->where('operaciones.fecha', '>=', $fecha_desde)
                                      ->where('operaciones.fecha', '<=', $fecha_hasta)
                                      ->where('empleados.estado', '!=', 'E')
-                                     ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')->get();
-
-            for($i = 0; $i < count($operaciones); $i++) {
-                if($operaciones[$i]->id_sector == 1)
-                    $operacionesLocal++;
-                if($operaciones[$i]->id_sector == 2)
-                    $operacionesSalon++;
-                if($operaciones[$i]->id_sector == 3)
-                    $operacionesCocina++;
-                if($operaciones[$i]->id_sector == 4)
-                    $operacionesBarraTragos++;
-                if($operaciones[$i]->id_sector == 5)
-                    $operacionesBarraCervezas++;
-                 if($operaciones[$i]->id_sector == 6)
-                    $operacionesCandyBar++;
-            }
-
-            echo    'Cantidad de Operaciones por sector' . PHP_EOL . PHP_EOL .
-                    'Local: ' . $operacionesLocal . ' operaciones.' . PHP_EOL .
-                    'Salon: ' . $operacionesSalon . ' operaciones.' . PHP_EOL .
-                    'Cocina: ' . $operacionesCocina . ' operaciones.' . PHP_EOL .
-                    'Barra de tragos y vinos: ' . $operacionesBarraTragos . ' operaciones.' . PHP_EOL .
-                    'Barra de cervezas: ' . $operacionesBarraCervezas . ' operaciones.' . PHP_EOL .                    
-                    'Candy Bar: ' . $operacionesCandyBar . ' operaciones.' . PHP_EOL;
+                                     ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')
+                                     ->get();
+         }   
+        
+        for($i = 0; $i < count($operaciones); $i++) {
+            if($operaciones[$i]->id_sector == 1)
+                $operacionesLocal++;
+            if($operaciones[$i]->id_sector == 2)
+                $operacionesSalon++;
+            if($operaciones[$i]->id_sector == 3)
+                $operacionesCocina++;
+            if($operaciones[$i]->id_sector == 4)
+                $operacionesBarraTragos++;
+            if($operaciones[$i]->id_sector == 5)
+                $operacionesBarraCervezas++;
+            if($operaciones[$i]->id_sector == 6)
+                $operacionesCandyBar++;
         }
 
+        echo    'Cantidad de Operaciones por sector' . PHP_EOL . PHP_EOL .
+                'Local: ' . $operacionesLocal . ' operaciones.' . PHP_EOL .
+                'Salon: ' . $operacionesSalon . ' operaciones.' . PHP_EOL .
+                'Cocina: ' . $operacionesCocina . ' operaciones.' . PHP_EOL .
+                'Barra de tragos y vinos: ' . $operacionesBarraTragos . ' operaciones.' . PHP_EOL .
+                'Barra de cervezas: ' . $operacionesBarraCervezas . ' operaciones.' . PHP_EOL .                    
+                'Candy Bar: ' . $operacionesCandyBar . ' operaciones.' . PHP_EOL;
     }
     //OK
-    static function CalcularCantidadPorEmpleado($arrayDeIdEmpleado, $operaciones) {
-        //Si el array del sector tiene al menos un dato mas que el -1
-        if(count($arrayDeIdEmpleado) > 1) {
-            $contador = 1;
-
-            for($i = 0; $i <= count($arrayDeIdEmpleado); $i++) { 
-                //Si es el ultimo registro, se imprime la cantidad del registro anterior
-                if($arrayDeIdEmpleado[$i+1] == -1) {
-                    for($j = 0; $j < count($operaciones); $j++) {
-                        if($arrayDeIdEmpleado[$i] == $operaciones[$j]->idEmpleado) {
-                            echo 'Empleado: ' . $operaciones[$j]->usuario . ". Operaciones: " . $contador . PHP_EOL;
-                            break;
-                        }                            
-                    }
-                    break;
-                }
-                
-                else if($arrayDeIdEmpleado[$i + 1] == $arrayDeIdEmpleado[$i])
-                    $contador++;
-                
-                else {
-                    for($j = 0; $j < count($operaciones); $j++) {
-                        if($arrayDeIdEmpleado[$i] == $operaciones[$j]->idEmpleado) {
-                            echo 'Empleado: ' . $operaciones[$j]->usuario . " .Operaciones: " . $contador . "\n";
-                            $contador = 1;
-                            break;
-                        }                            
-                    }
-                }                
-            }
-        }
-        else
-            echo 'NO HAY OPERACIONES' . PHP_EOL;
-    }
-    //OK
-    static function CalcularCantidadOperacionesPorEmpleado( $idDeEmpleadosLocal, $idDeEmpleadosSalon, $idDeEmpleadosVinos, 
-                                                            $idDeEmpleadosCerveza, $idDeEmpleadosCocina, $idDeEmpleadosCandyBar, $operaciones) {
+    static function CalcularCantidadOperacionesPorEmpleado( $idDeEmpleadosLocal, $idDeEmpleadosSalon, $idDeEmpleadosVinos, $idDeEmpleadosCerveza, 
+                                                            $idDeEmpleadosCocina, $idDeEmpleadosCandyBar, $operaciones, $fecha, $fecha_desde, $fecha_hasta) {
         echo 'LOCAL' . PHP_EOL;   
-        EmpleadoApi::CalcularCantidadPorEmpleado($idDeEmpleadosLocal, $operaciones);
+        EmpleadoApi::CalcularCantidadOperacionesPorEmpleadoNew($idDeEmpleadosLocal, $fecha, $fecha_desde, $fecha_hasta);
 
         echo PHP_EOL . '--------------------------------------------------' . PHP_EOL;
         
         echo 'SALON' . PHP_EOL;     
-        EmpleadoApi::CalcularCantidadPorEmpleado($idDeEmpleadosSalon, $operaciones);
+        EmpleadoApi::CalcularCantidadOperacionesPorEmpleadoNew($idDeEmpleadosSalon, $fecha, $fecha_desde, $fecha_hasta);
 
         echo PHP_EOL . '--------------------------------------------------' . PHP_EOL;
         
         echo 'BARRA DE TRAGOS Y VINOS' . PHP_EOL;      
-        EmpleadoApi::CalcularCantidadPorEmpleado($idDeEmpleadosVinos, $operaciones);
+        EmpleadoApi::CalcularCantidadOperacionesPorEmpleadoNew($idDeEmpleadosVinos, $fecha, $fecha_desde, $fecha_hasta);
 
         echo PHP_EOL . '--------------------------------------------------' . PHP_EOL;
         
-        echo 'BARRA DE CERVEZAS ARTESANALES' . PHP_EOL;            
-        EmpleadoApi::CalcularCantidadPorEmpleado($idDeEmpleadosCerveza, $operaciones);
+        echo 'BARRA DE CERVEZAS ARTESANALES' . PHP_EOL;
+        EmpleadoApi::CalcularCantidadOperacionesPorEmpleadoNew($idDeEmpleadosCerveza, $fecha, $fecha_desde, $fecha_hasta);
 
         echo PHP_EOL . '--------------------------------------------------' . PHP_EOL;
         
-        echo 'COCINA' . PHP_EOL;            
-        EmpleadoApi::CalcularCantidadPorEmpleado($idDeEmpleadosCocina, $operaciones);
+        echo 'COCINA' . PHP_EOL; 
+        EmpleadoApi::CalcularCantidadOperacionesPorEmpleadoNew($idDeEmpleadosCocina, $fecha, $fecha_desde, $fecha_hasta);
 
         echo PHP_EOL . '--------------------------------------------------' . PHP_EOL;
         
         echo 'CANDY BAR' . PHP_EOL;            
-        EmpleadoApi::CalcularCantidadPorEmpleado($idDeEmpleadosCandyBar, $operaciones);
+        EmpleadoApi::CalcularCantidadOperacionesPorEmpleadoNew($idDeEmpleadosCandyBar, $fecha, $fecha_desde, $fecha_hasta);
+
     }
     //OK
-    public function CantidadOperacionesPorSectorYEmpleado($request, $response, $args) {    
+    public static function CantidadOperacionesPorSectorYEmpleado($request, $response, $args) {    
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
         $fecha_hasta = $_GET['fecha_hasta'];
@@ -471,36 +395,11 @@ class EmpleadoApi {
             $fecha = strtotime($fecha);
             $fecha = date('Y-m-d H:i:s' , $fecha);
             $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
-                                    ->where('operaciones.fecha', '=', $fecha)
-                                    ->where('empleados.estado', '!=', 'E')
-                                    ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')
-                                    ->orderBy('empleados.id_sector')->get();
-
-            for($i = 0; $i < count($operaciones); $i++) {
-                if($operaciones[$i]->id_sector == 1)
-                    $idDeEmpleadosLocal[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 2)
-                    $idDeEmpleadosSalon[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 3)
-                    $idDeEmpleadosCocina[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 4)
-                    $idDeEmpleadosVinos[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 5)
-                    $idDeEmpleadosCerveza[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 6)
-                    $idDeEmpleadosCandyBar[] = $operaciones[$i]->idEmpleado;
-            }
-
-            //Se agrega un -1 al final del array para identificar el ultimo registro
-            $idDeEmpleadosLocal[] = -1;
-            $idDeEmpleadosSalon[] = -1;
-            $idDeEmpleadosVinos[] = -1;
-            $idDeEmpleadosCerveza[] = -1;
-            $idDeEmpleadosCocina[] = -1;
-            $idDeEmpleadosCandyBar[] = -1;
-
-            EmpleadoApi::CalcularCantidadOperacionesPorEmpleado($idDeEmpleadosLocal, $idDeEmpleadosSalon, $idDeEmpleadosVinos, $idDeEmpleadosCerveza, 
-                                                                $idDeEmpleadosCocina, $idDeEmpleadosCandyBar, $operaciones);
+                                     ->where('operaciones.fecha', '=', $fecha)
+                                     ->where('empleados.estado', '!=', 'E')
+                                     ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')
+                                     ->orderBy('empleados.id_sector')
+                                     ->get();
         }
         else {
             $fecha_desde = strtotime($fecha_desde);
@@ -509,37 +408,85 @@ class EmpleadoApi {
             $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
             $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
-                                    ->where('operaciones.fecha', '>=', $fecha_desde)
-                                    ->where('operaciones.fecha', '<=', $fecha_hasta)
-                                    ->where('empleados.estado', '!=', 'E')
-                                    ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')
-                                    ->orderBy('empleados.id_sector')->get();
-
-            for($i = 0; $i < count($operaciones); $i++) {
-                if($operaciones[$i]->id_sector == 1)
-                    $idDeEmpleadosLocal[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 2)
-                    $idDeEmpleadosSalon[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 3)
-                    $idDeEmpleadosCocina[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 4)
-                    $idDeEmpleadosVinos[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 5)
-                    $idDeEmpleadosCerveza[] = $operaciones[$i]->idEmpleado;
-                if($operaciones[$i]->id_sector == 6)
-                    $idDeEmpleadosCandyBar[] = $operaciones[$i]->idEmpleado;
-            }
-
-            //Se agrega un -1 al final del array para identificar el ultimo registro
-            $idDeEmpleadosLocal[] = -1;
-            $idDeEmpleadosSalon[] = -1;
-            $idDeEmpleadosVinos[] = -1;
-            $idDeEmpleadosCerveza[] = -1;
-            $idDeEmpleadosCocina[] = -1;
-            $idDeEmpleadosCandyBar[] = -1;
-
-            EmpleadoApi::CalcularCantidadOperacionesPorEmpleado($idDeEmpleadosLocal, $idDeEmpleadosSalon, $idDeEmpleadosVinos, $idDeEmpleadosCerveza, 
-                                                                $idDeEmpleadosCocina, $idDeEmpleadosCandyBar, $operaciones);
+                                     ->where('operaciones.fecha', '>=', $fecha_desde)
+                                     ->where('operaciones.fecha', '<=', $fecha_hasta)
+                                     ->where('empleados.estado', '!=', 'E')
+                                     ->select('operaciones.id as id', 'empleados.id as idEmpleado', 'empleados.usuario', 'empleados.id_sector')
+                                     ->orderBy('empleados.id_sector')
+                                     ->get();
         }
+
+        for($i = 0; $i < count($operaciones); $i++) {
+            if($operaciones[$i]->id_sector == 1)
+                $idDeEmpleadosLocal[] = $operaciones[$i]->idEmpleado;
+            if($operaciones[$i]->id_sector == 2)
+                $idDeEmpleadosSalon[] = $operaciones[$i]->idEmpleado;
+            if($operaciones[$i]->id_sector == 3)
+                $idDeEmpleadosCocina[] = $operaciones[$i]->idEmpleado;
+            if($operaciones[$i]->id_sector == 4)
+                $idDeEmpleadosVinos[] = $operaciones[$i]->idEmpleado;
+            if($operaciones[$i]->id_sector == 5)
+                $idDeEmpleadosCerveza[] = $operaciones[$i]->idEmpleado;
+            if($operaciones[$i]->id_sector == 6)
+                $idDeEmpleadosCandyBar[] = $operaciones[$i]->idEmpleado;
+        }
+
+        $idDeEmpleadosLocal[] = -1;
+        $idDeEmpleadosSalon[] = -1;
+        $idDeEmpleadosVinos[] = -1;
+        $idDeEmpleadosCerveza[] = -1;
+        $idDeEmpleadosCocina[] = -1;
+        $idDeEmpleadosCandyBar[] = -1;
+
+        EmpleadoApi::CalcularCantidadOperacionesPorEmpleado($idDeEmpleadosLocal, $idDeEmpleadosSalon, $idDeEmpleadosVinos, $idDeEmpleadosCerveza, 
+                                                            $idDeEmpleadosCocina, $idDeEmpleadosCandyBar, $operaciones, $fecha, $fecha_desde, $fecha_hasta);
+    }
+    //OK
+    public static function CalcularCantidadOperacionesPorEmpleadoNew($arrayDeIdEmpleado, $fecha, $fecha_desde, $fecha_hasta) {
+        $newArray = array_unique($arrayDeIdEmpleado);
+  
+        if(count($newArray) > 1) { 
+            foreach ($newArray as $id) {
+                if($id != -1)
+                    EmpleadoApi::OperacionesPorID($id, $fecha, $fecha_desde, $fecha_hasta);
+            }
+        }
+        else
+            echo 'NO HAY OPERACIONES' . PHP_EOL;
+    }
+    //OK
+    public static function OperacionesPorID($id, $fecha, $fecha_desde, $fecha_hasta) {
+        $operacion = new App\Models\Operacion;
+        $empleadoDao = new App\Models\Empleado;
+        $empleado = $empleadoDao->where('id', '=', $id)
+                                ->first();
+
+        if($fecha != "") {         
+            $fecha = strtotime($fecha);
+            $fecha = date('Y-m-d H:i:s' , $fecha);             
+
+            $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
+                                     ->where('operaciones.fecha', '=', $fecha)
+                                     ->where('empleados.estado', '!=', 'E')
+                                     ->where('empleados.usuario', '=', $empleado->usuario)
+                                     ->select('empleados.id as idEmpleado', 'empleados.usuario')
+                                     ->get();
+        }
+        else {
+            $fecha_desde = strtotime($fecha_desde);
+            $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+            $fecha_hasta = strtotime($fecha_hasta);
+            $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+
+            $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
+                                     ->where('operaciones.fecha', '>=', $fecha_desde)
+                                     ->where('operaciones.fecha', '<=', $fecha_hasta)
+                                     ->where('empleados.estado', '!=', 'E')
+                                     ->where('empleados.usuario', '=', $empleado->usuario)
+                                     ->select('empleados.id as idEmpleado', 'empleados.usuario')
+                                     ->get();
+        }
+
+        echo 'Empleado: ' . $empleado->usuario . ". Operaciones: " . count($operaciones) . PHP_EOL;
     }
 }
