@@ -1,0 +1,1469 @@
+{
+	"info": {
+		"_postman_id": "b7f74183-fc12-4a9c-810b-834632653918",
+		"name": "La Comanda",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Empleados",
+			"item": [
+				{
+					"name": "Login Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "sebastian@aguirre",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "clave",
+									"value": "S3b4st14n",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "usuario",
+									"value": "carlos@mozo",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "12345678",
+									"type": "text"
+								},
+								{
+									"key": "usuario",
+									"value": "pedro@cocinero",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}empleado/login/",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alta Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYwNzY3NjAsImV4cCI6MTYzMjA3Njc2MCwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.c-Xwf4vjm4MchtMwEkBwNpwhGZuzmjoY1cDJSmJ_iVA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "usuario",
+									"value": "micaela@bartender",
+									"type": "text"
+								},
+								{
+									"key": "clave",
+									"value": "12345678",
+									"type": "text"
+								},
+								{
+									"key": "tipo_empleado",
+									"value": "bartender",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}empleado/alta/",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"alta",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ingresos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYwNzY3NjAsImV4cCI6MTYzMjA3Njc2MCwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.c-Xwf4vjm4MchtMwEkBwNpwhGZuzmjoY1cDJSmJ_iVA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}empleado/ingresos/?fecha=&fecha_desde=2020-07-19&fecha_hasta=2020-07-30",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"ingresos",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-19"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-30"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Empleados",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYwNzY3NjAsImV4cCI6MTYzMjA3Njc2MCwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.c-Xwf4vjm4MchtMwEkBwNpwhGZuzmjoY1cDJSmJ_iVA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}empleado/listado/",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"listado",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYwNzY3NjAsImV4cCI6MTYzMjA3Njc2MCwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.c-Xwf4vjm4MchtMwEkBwNpwhGZuzmjoY1cDJSmJ_iVA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id_empleado",
+									"value": "5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}empleado/eliminar/",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"eliminar",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Suspender Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYwNzY3NjAsImV4cCI6MTYzMjA3Njc2MCwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.c-Xwf4vjm4MchtMwEkBwNpwhGZuzmjoY1cDJSmJ_iVA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id_empleado",
+									"value": "8",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}empleado/suspender/",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"suspender",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listado Por Puesto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYwNzY3NjAsImV4cCI6MTYzMjA3Njc2MCwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.c-Xwf4vjm4MchtMwEkBwNpwhGZuzmjoY1cDJSmJ_iVA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}empleado/listado/puesto/?puesto=MOZO",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"listado",
+								"puesto",
+								""
+							],
+							"query": [
+								{
+									"key": "puesto",
+									"value": "MOZO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operaciones",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2MzY1NzYsImV4cCI6MTYzMTYzNjU3NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.ap4te21VLf0WhMjki90GtfyymEIUQ6HnJ8uw31l4pmU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}empleado/operaciones/?fecha=&fecha_desde=2020-07-10&fecha_hasta=2020-07-24&empleado=sebastian@aguirre",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"operaciones",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-10"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-24"
+								},
+								{
+									"key": "empleado",
+									"value": "juan@mozo",
+									"disabled": true
+								},
+								{
+									"key": "empleado",
+									"value": "sebastian@aguirre"
+								},
+								{
+									"key": "empleado",
+									"value": "carlos@mozo",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operaciones por sector",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2MzY1NzYsImV4cCI6MTYzMTYzNjU3NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.ap4te21VLf0WhMjki90GtfyymEIUQ6HnJ8uw31l4pmU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}empleado/operaciones/sector/?fecha=&fecha_desde=2020-07-15&fecha_hasta=2020-07-24",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"operaciones",
+								"sector",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-15"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-24"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Operaciones por sector y empleado",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2MzY1NzYsImV4cCI6MTYzMTYzNjU3NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.ap4te21VLf0WhMjki90GtfyymEIUQ6HnJ8uw31l4pmU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}empleado/operaciones/sector/empleado/?fecha=&fecha_desde=2020-07-10&fecha_hasta=2020-07-24",
+							"host": [
+								"{{url}}empleado"
+							],
+							"path": [
+								"operaciones",
+								"sector",
+								"empleado",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-10"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-24"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Pedidos",
+			"item": [
+				{
+					"name": "Cargar Pedido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU1NTQzOTksImV4cCI6MTYzMTU1NDM5OSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxMCwidXN1YXJpbyI6ImNhcmxvc0Btb3pvIiwiY2xhdmUiOiIxMjM0NTY3OCIsImlkX3RpcG9fZW1wbGVhZG8iOjIsInRpcG9fZW1wbGVhZG8iOiJtb3pvIiwiaWRfc2VjdG9yIjoxfX0.m9fpnFGoj2dH26ejpP4marS2JoN-ZeaY21XNGFO99Xo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id_mesa",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "id_producto",
+									"value": "13",
+									"type": "text"
+								},
+								{
+									"key": "cantidad",
+									"value": "25",
+									"type": "text"
+								},
+								{
+									"key": "nombre_cliente",
+									"value": "Pedro",
+									"type": "text"
+								},
+								{
+									"key": "foto",
+									"type": "file",
+									"src": "20190205_125526.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tomar Pedido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU1NTE3NTIsImV4cCI6MTYzMTU1MTc1MiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxMCwidXN1YXJpbyI6ImNhcmxvc0Btb3pvIiwiY2xhdmUiOiIxMjM0NTY3OCIsImlkX3RpcG9fZW1wbGVhZG8iOjIsInRpcG9fZW1wbGVhZG8iOiJtb3pvIiwiaWRfc2VjdG9yIjoxfX0.kY2ikdLOIUGlOqBIuyub0juarSxQYilunSmpUHML_Qg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "codigo",
+									"value": "o2ew",
+									"type": "text"
+								},
+								{
+									"key": "tiempo_estimado",
+									"value": "20",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}pedido/tomar/",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"tomar",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pedidos Pendientes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2MzY1NzYsImV4cCI6MTYzMTYzNjU3NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.ap4te21VLf0WhMjki90GtfyymEIUQ6HnJ8uw31l4pmU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}pedido/pendientes/",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"pendientes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Estado de Pedidos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU1NTU3ODUsImV4cCI6MTYzMTU1NTc4NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.jZDFoDgzwTuVr5BgVEEL-82-u66yAhw3VwmsJ5ULirA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}pedido/estados/",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"estados",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tiempo restante",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU0NjkwNjYsImV4cCI6MTU5NTQ3MjY2NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.gdxjqZ4NxH6zXEzlBEgP3EV8-MTmjgQ0_rpT0RKCyXE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "codigo_mesa",
+									"value": "h8cs3",
+									"type": "text"
+								},
+								{
+									"key": "codigo_pedido",
+									"value": "oyvz",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}pedido/tiempo_restante/",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"tiempo_restante",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Servir Pedido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTYxNDg4MDgsImV4cCI6MTYzMjE0ODgwOCwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxMCwidXN1YXJpbyI6ImNhcmxvc0Btb3pvIiwiY2xhdmUiOiIxMjM0NTY3OCIsImlkX3RpcG9fZW1wbGVhZG8iOjIsInRpcG9fZW1wbGVhZG8iOiJtb3pvIiwiaWRfc2VjdG9yIjoyfX0.PHyZHrfUb_qmfbdJMNaZCWWy35FXQHB8Ega9ErdOKiA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}pedido/servir/",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"servir",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar Pedido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2MzYxMjYsImV4cCI6MTYzMTYzNjEyNiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxMCwidXN1YXJpbyI6ImNhcmxvc0Btb3pvIiwiY2xhdmUiOiIxMjM0NTY3OCIsImlkX3RpcG9fZW1wbGVhZG8iOjIsInRpcG9fZW1wbGVhZG8iOiJtb3pvIiwiaWRfc2VjdG9yIjoxfX0.0jiLpZ_8J6kaHtQhEM4R0mCNQP_t1eeaDveTSoyZe7Y",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "codigo",
+									"value": "u36q",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}pedido/cancelar/",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"cancelar",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pedidos Cancelados",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2MzY1NzYsImV4cCI6MTYzMTYzNjU3NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.ap4te21VLf0WhMjki90GtfyymEIUQ6HnJ8uw31l4pmU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}pedido/cancelados/?fecha=&fecha_desde=2020-07-23&fecha_hasta=2020-07-30",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"cancelados",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-23"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-30"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mas Vendido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2NTAxNjYsImV4cCI6MTYzMTY1MDE2NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.pDlHN93HjWuVhPXeRDJeWc-pJmNjTe76-iHOl2Zxv2k",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}pedido/mas_vendido/?fecha&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"mas_vendido",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": null
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Menos Vendidos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTIwNzIsImV4cCI6MTYzMTcxMjA3MiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.nHXz_Bog2i3lbxjvAb6nbwQv09wobeaRo8QAqfb36Pk",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}pedido/menos_vendido/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"menos_vendido",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pedidos Retrasados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTIwNzIsImV4cCI6MTYzMTcxMjA3MiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.nHXz_Bog2i3lbxjvAb6nbwQv09wobeaRo8QAqfb36Pk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}pedido/retrasados/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-29",
+							"host": [
+								"{{url}}pedido"
+							],
+							"path": [
+								"retrasados",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-29"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Mesas",
+			"item": [
+				{
+					"name": "Cargar Mesa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU1NTgwNTcsImV4cCI6MTYzMTU1ODA1NywiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxMCwidXN1YXJpbyI6ImNhcmxvc0Btb3pvIiwiY2xhdmUiOiIxMjM0NTY3OCIsImlkX3RpcG9fZW1wbGVhZG8iOjIsInRpcG9fZW1wbGVhZG8iOiJtb3pvIiwiaWRfc2VjdG9yIjoxfX0.d8Wl4ycyy1dHQynFyADa24LkKr4mbb_Vx02PnVDvlY8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}mesa/cargar/",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"cargar",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mesa Estado Esperando",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2NTAxNjYsImV4cCI6MTYzMTY1MDE2NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.pDlHN93HjWuVhPXeRDJeWc-pJmNjTe76-iHOl2Zxv2k",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "codigo",
+									"value": "1zneg",
+									"type": "text"
+								},
+								{
+									"key": "codigo",
+									"value": "4dao1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}mesa/estado/esperando/",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"estado",
+								"esperando",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mesa Comiendo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2NTAxNjYsImV4cCI6MTYzMTY1MDE2NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.pDlHN93HjWuVhPXeRDJeWc-pJmNjTe76-iHOl2Zxv2k",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "codigo",
+									"value": "knr5t",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}mesa/estado/comiendo/",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"estado",
+								"comiendo",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mesa Pagando",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2NTAxNjYsImV4cCI6MTYzMTY1MDE2NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.pDlHN93HjWuVhPXeRDJeWc-pJmNjTe76-iHOl2Zxv2k",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "codigo",
+									"value": "4dao1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}mesa/estado/pagando/",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"estado",
+								"pagando",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mesa Cerrada",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU2NTAxNjYsImV4cCI6MTYzMTY1MDE2NiwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.pDlHN93HjWuVhPXeRDJeWc-pJmNjTe76-iHOl2Zxv2k",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "codigo",
+									"value": "knr5t",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}mesa/estado/cerrada/",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"estado",
+								"cerrada",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mesa Mas Usada",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}mesa/mas_usada/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"mas_usada",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mayor Facturacion",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}mesa/facturacion/mayor/?fecha&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"facturacion",
+								"mayor",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": null
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Factura MAyor Importe",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/mesa/factura/mayor_importe/?fecha&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"mesa",
+								"factura",
+								"mayor_importe",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": null
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Menor Facturacion",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}mesa/facturacion/menor/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"facturacion",
+								"menor",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Factura menor importe",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}mesa/factura/menor/?fecha=2020-07-28&fecha_desde=2020-07-20&fecha_hasta=2020-07-30",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"factura",
+								"menor",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": "2020-07-28"
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-30"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Factura Mayor Importe",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}mesa/factura/mayor/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"factura",
+								"mayor",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Facturacion entre fechas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}mesa/facturacion/fechas/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-25&id_mesa=9",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"facturacion",
+								"fechas",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								},
+								{
+									"key": "id_mesa",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mesa Menos Usada",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}mesa/menos_usada/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-25",
+							"host": [
+								"{{url}}mesa"
+							],
+							"path": [
+								"menos_usada",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Encuesta",
+			"item": [
+				{
+					"name": "Encuesta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "puntuacion_mesa",
+									"value": "8"
+								},
+								{
+									"key": "puntuacion_restaurante",
+									"value": "10"
+								},
+								{
+									"key": "puntuacion_mozo",
+									"value": "6"
+								},
+								{
+									"key": "puntuacion_cocinero",
+									"value": "7"
+								},
+								{
+									"key": "comentario",
+									"value": "Muy bueno todo."
+								},
+								{
+									"key": "codigo_mesa",
+									"value": "h8cs3"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}encuesta/",
+							"host": [
+								"{{url}}encuesta"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mejores comentarios",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/comentarios/mejores/?fecha&fecha_desde=2020-07-20&fecha_hasta=2020-07-30&codigo_mesa=1zneg",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"comentarios",
+								"mejores",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": null
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-30"
+								},
+								{
+									"key": "codigo_mesa",
+									"value": "1zneg"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Peores comentarios",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTU3MTMyOTUsImV4cCI6MTYzMTcxMzI5NSwiYXVkIjoidXN1YXJpbyIsImFwcCI6IkNvbWFuZGEiLCJkYXRhIjp7ImlkIjoxLCJ1c3VhcmlvIjoic2ViYXN0aWFuQGFndWlycmUiLCJjbGF2ZSI6IlMzYjRzdDE0biIsImlkX3RpcG9fZW1wbGVhZG8iOjEsInRpcG9fZW1wbGVhZG8iOiJzb2NpbyIsImlkX3NlY3RvciI6MX19.k3MGla5yHHIzmsHI3crE7R7sQBWulO6va8JbmponKzw"
+							}
+						],
+						"url": {
+							"raw": "{{url}}comentarios/peores/?fecha=&fecha_desde=2020-07-20&fecha_hasta=2020-07-25&codigo_mesa=1zneg&",
+							"host": [
+								"{{url}}comentarios"
+							],
+							"path": [
+								"peores",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha",
+									"value": ""
+								},
+								{
+									"key": "fecha_desde",
+									"value": "2020-07-20"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2020-07-25"
+								},
+								{
+									"key": "codigo_mesa",
+									"value": "1zneg"
+								},
+								{
+									"key": "",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

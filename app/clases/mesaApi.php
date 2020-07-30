@@ -1,7 +1,7 @@
 <?php
 
 class MesaApi {
-    //OK
+    
     public function CargarMesa($request, $response, $args) {
         $codigo = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 3)), 0, 5);
         try {
@@ -17,7 +17,7 @@ class MesaApi {
 
         return $response->withJson($respuesta, 200);
     } 
-    //OK
+    
     public function CambiarEstadoClienteEsperandoPedido($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $codigo = $parametros['codigo'];
@@ -49,7 +49,7 @@ class MesaApi {
 
         return $response->withJson($mensaje, 200);
     }
-    //OK
+    
     public function CambiarEstadoClienteComiendo($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $codigo = $parametros['codigo'];
@@ -82,7 +82,7 @@ class MesaApi {
 
         return $response->withJson($mensaje, 200);
     }
-    //Ok
+    
     public function CambiarEstadoClientePagando($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $codigo = $parametros['codigo'];
@@ -134,7 +134,7 @@ class MesaApi {
 
         return $response->withJson($mensaje, 200);
     }
-    //Ok
+    
     public function CambiarEstadoCerrada($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $codigo = $parametros['codigo'];
@@ -167,7 +167,7 @@ class MesaApi {
 
         return $response->withJson($mensaje, 200);
     }
-    //OK
+    
     public function LaMasUsada($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -197,7 +197,7 @@ class MesaApi {
         }
         MesaApi::BuscarMesaMasUsada($mesasUsadasDao);
     }
-    //OK
+    
     static function BuscarMesaMasUsada($mesasUsadasDao) {
         $mesasUsadas = [];
         
@@ -237,7 +237,7 @@ class MesaApi {
         else
             echo 'Sin operaciones' . PHP_EOL;
     }
-    //OK
+    
     public function LaMenosUsada($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -305,7 +305,7 @@ class MesaApi {
             echo 'Mesa menos usada: ' . $mesaMenosUsada . PHP_EOL . 
                  'Cantidad de veces: 0';               
     }
-    //OK
+    
     static function BuscarMesaMenosUsada($mesasUsadasDao, $mesasUsadas) {       
         $mesasUsadas[] = -1;
         $mesaMenosUsada;
@@ -340,7 +340,7 @@ class MesaApi {
 
         return $mesaMenosUsada;
     }
-    //OK
+    
     public function LaQueMasFacturo($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -390,7 +390,7 @@ class MesaApi {
     
         return $response->withJson($respuesta, 200);
     }
-    //OK
+    
     public function LaQueMenosFacturo($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -467,7 +467,7 @@ class MesaApi {
         }
         return $response->withJson($respuesta, 200);
     }
-    //OK
+    
     public function FacturaMayorImporte($request, $response, $args) {
         try {
             $fecha = $_GET['fecha'];
@@ -518,7 +518,7 @@ class MesaApi {
 
         return $response->withJson($respuesta, 200);
     }
-    //OK
+    
     public function FacturaMenorImporte($request, $response, $args) {
         try {
             $fecha = $_GET['fecha'];
@@ -568,7 +568,7 @@ class MesaApi {
 
         return $response->withJson($respuesta, 200);
     }
-    //OK
+    
     public function FacturacionEntreFechas($request, $response, $args) {
         $fecha_desde = $_GET['fecha_desde'];
         $fecha_hasta = $_GET['fecha_hasta'];
@@ -600,7 +600,7 @@ class MesaApi {
 
         return $response->withJson($respuesta, 200);
     }
-    //TODO!!
+    
     public function MejoresComentarios($request, $response, $args) {
         try {
             $fecha = $_GET['fecha'];
@@ -631,7 +631,7 @@ class MesaApi {
                     $fecha_hasta = strtotime($fecha_hasta);
                     $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
         
-                    $mejoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
+                    $mejoresComentarios =  $encuesta->where('codigo_mesa', '=', $codigo)
                                                     ->where('fecha', '>=', $fecha_desde)
                                                     ->where('fecha', '<=', $fecha_hasta)
                                                     ->where('puntuacion_restaurante', '>=', 6)
@@ -641,31 +641,29 @@ class MesaApi {
                 }
 
                 if($mejoresComentarios->isEmpty())
-                    $respuesta = 'No se registran comentarios para esta mesa en esta fecha';
+                    echo 'No se registran comentarios para esta mesa en esta fecha.';
                 else {
-                    $respuesta = "";
                     for($i = 0; $i < count($mejoresComentarios); $i++) {
-                        $respuesta .'Puntuacion Restaurante: ' . $mejoresComentarios[$i]->puntuacionRestaurante . PHP_EOL .
-                                    '. Comentario: ' . $mejoresComentarios[$i]->comentario . PHP_EOL;
+                        echo 'Puntuacion Restaurante: ' . $mejoresComentarios[$i]->puntuacionRestaurante . PHP_EOL .
+                             '. Comentario: ' . $mejoresComentarios[$i]->comentario . PHP_EOL;
                     }                
                 }              
             }
             else
-                $respuesta = array("Estado" => "Error", "No existe mesa con ese código.");
+                echo "No existe mesa con ese código.";
         }
         catch(Exception $e) {
             $respuesta = array("Estado" => "Error", "Mensaje" => $e->getMessage());
+            return $response->withJson($respuesta, 200);
         } 
-
-        return $request->withJson($respuesta, 200);
     }
-    //TODO!!
+
     public function PeoresComentarios($request, $response, $args) {    
         try {
             $fecha = $_GET['fecha'];
             $fecha_desde = $_GET['fecha_desde'];
             $fecha_hasta = $_GET['fecha_hasta'];
-            $codigo = $_GET['codigo'];
+            $codigo = $_GET['codigo_mesa'];
 
             $encuesta = new App\Models\Encuesta;
             $mesa = new App\Models\Mesa;
@@ -689,33 +687,31 @@ class MesaApi {
                     $fecha_hasta = strtotime($fecha_hasta);
                     $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
         
-                    $peoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
+                    $peoresComentarios =  $encuesta->where('codigo_mesa', '=', $codigo)
                                                     ->where('fecha', '>=', $fecha_desde)
                                                     ->where('fecha', '<=', $fecha_hasta)
                                                     ->where('puntuacion_restaurante', '<=', 5)
                                                     ->where('puntuacion_mozo', '<=', 5)
-                                                    ->where('puntuacion_mocinero', '<=', 5)
+                                                    ->where('puntuacion_cocinero', '<=', 5)
                                                     ->get();
                 }
 
                 if($peoresComentarios->isEmpty())
-                    $respuesta = 'No se registran comentarios para la mesa indicada.';
+                    echo 'No se registran comentarios para la mesa indicada.';
                 else {
-                    $respuesta = "";
                     for($i = 0; $i < count($peoresComentarios); $i++) {
-                        $respuesta . 'Puntuacion Restaurante: ' . $peoresComentarios[$i]->puntuacionRestaurante . PHP_EOL .
-                                     '. Comentario: ' . $peoresComentarios[$i]->comentario . PHP_EOL;
+                        echo 'Puntuacion Restaurante: ' . $peoresComentarios[$i]->puntuacionRestaurante . PHP_EOL .
+                             '. Comentario: ' . $peoresComentarios[$i]->comentario . PHP_EOL;
                     }                
                 }                   
            
             }
             else
-                $respuesta = 'El codigo de mesa es incorrecto';
+                $respuesta = 'El codigo de mesa es incorrecto.';
         }
         catch(Exception $e) {
             $respuesta = array("Estado" => "Error", "Mensaje" => $e->getMessage());
+            return $response->withJson($respuesta, 200);
         } 
-
-        return $request->withJson($respuesta, 200);
     }
 }

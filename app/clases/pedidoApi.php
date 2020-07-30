@@ -1,7 +1,6 @@
 <?php
 
 class PedidoApi {
-    //OK
     public function CargarPedido($request, $response, $args) {
         try {     
             $parametros = $request->getParsedBody();    
@@ -34,13 +33,12 @@ class PedidoApi {
             $respuesta = array("Estado" => "El pedido se registró correctamente", "Código de pedido" => $codigo);
         }
         catch(Exception $e) {
-            $mensaje = $e->getMessage();
-            $respuesta = array("Estado" => "ERROR", "Mensaje" => $mensaje);
+            $respuesta = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
         }
 
         return $response->withJson($respuesta, 200);
     }
-    //OK
+ 
     static function GuardarFoto($foto, $codigo, $idMesa) {        
         $ruta = $foto['tmp_name'];
         $extension = explode(".", $foto['name']);
@@ -52,7 +50,7 @@ class PedidoApi {
         
         return $nombreFoto;
     }
-    //OK
+    
     public function VerPedidosPendientes($request, $response, $args) {
         $payload = $request->getAttribute("payload")["Payload"];
         $infoEmpleado = $payload->data;
@@ -76,23 +74,23 @@ class PedidoApi {
         else
             echo 'No hay pedidos pendientes';
     }
-    //OK
+    
     public function TomarPedido($request, $response, $args) {
-        $payload = $request->getAttribute("payload")["Payload"];
-        $infoEmpleado = $payload->data;
-        $idSector = $infoEmpleado->id_sector;
-
-        $parametros = $request->getParsedBody();
-        $codigo = $parametros['codigo'];
-        $tiempoEstimado = $parametros['tiempo_estimado'];
-        $pedido = new App\Models\Pedido;
-
         try {
+            $payload = $request->getAttribute("payload")["Payload"];
+            $infoEmpleado = $payload->data;
+            $idSector = $infoEmpleado->id_sector;
+
+            $parametros = $request->getParsedBody();
+            $codigo = $parametros['codigo'];
+            $tiempoEstimado = $parametros['tiempo_estimado'];
+            $pedido = new App\Models\Pedido;
             $pedidoATomar = $pedido ->where('codigo', '=', $codigo)
                                     ->firstOrFail();        
             $idSectorProducto = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
                                         ->where('productos.id', '=', $pedidoATomar->id_producto)
-                                        ->select('productos.id_sector')->firstOrFail();
+                                        ->select('productos.id_sector')
+                                        ->firstOrFail();
 
             $horaActual = new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires'));
             $horaActual->add(new DateInterval('PT' . $tiempoEstimado . 'M'));
@@ -104,15 +102,15 @@ class PedidoApi {
             $pedidoATomar->id_empleado = $infoEmpleado->id;
             $pedidoATomar->save();
 
-            $mensaje = array("Estado" => "Ok", "Mensaje " => "Pedido en preparación");
+            $mensaje = array("Estado" => "Ok", "Mensaje " => "Pedido en preparación.");
         }
         catch(Exception $e) {
-            $error = $e->getMessage();
-            $mensaje = array("Estado" => "Error", "Mensaje " => $error);
-        }     
+            $mensaje = array("Estado" => "ERROR", "Mensaje " => "Verifique los datos ingresados.");
+        }  
+
         return $response->withJson($mensaje, 200);
     }
-    //OK
+  
     public function VerEstadoPedidos($request, $response, $args) {
         $pedido = new App\Models\Pedido;
 
@@ -133,7 +131,7 @@ class PedidoApi {
         else    
             echo 'No hay pedidos.';
     }
-    //OK
+    
     public function TiempoRestante($request, $response, $args) {
         $parametros = $request->getParsedBody();
         $codigoPedido = $parametros['codigo_pedido'];
@@ -148,8 +146,8 @@ class PedidoApi {
         $pedidoActual = $pedido ->where('codigo', '=', $codigoPedido)
                                 ->first();
 
-        $mensaje = array("Estado" => "Error", "Mensaje " => "No hay pedidos con ese código o para esa mesa.");                      
-        if ($pedidoActual != null || $idMesa != null) {
+        $mensaje = array("Estado" => "Error", "Mensaje " => "Verifique los datos ingresados.");                      
+        if ($pedidoActual != null && $idMesa != null) {
             $entrega = $pedidoActual->hora_entrega_estimada;
 
             if($pedidoActual->id_estado_pedido == 2 && $pedidoActual->id_mesa == $idMesa->id) {            
@@ -167,28 +165,28 @@ class PedidoApi {
         }
         return $response->withJson($mensaje, 200);
     }
-    //TODO
+ 
     public function ServirPedido($request, $response, $args) {
         $payload = $request->getAttribute("payload")["Payload"];
         $infoEmpleado = $payload->data;
         $id = $infoEmpleado->id;
         $horaEntrega = date('H:i');
         $pedido = new App\Models\Pedido;
-        
         try {
-            $pedidoAServir = $pedido->where([['id_estadoPedido', '=', 2],['id_empleado', '=', $id],])
+            $pedidoAServir = $pedido->where('id_estado_pedido', '=', 2)
+                                    ->where('id_empleado', '=', $id)
                                     ->firstOrFail();        
             $pedidoAServir->id_estado_pedido = 3;
             $pedidoAServir->hora_entrega = $horaEntrega;
             $pedidoAServir->save();
-            $mensaje = array("Estado" => "Ok", "Mensaje " => "El pedido " . $pedidoAServir->codigo . " esta listo.");
+            $mensaje = array("Estado" => "Ok", "Mensaje " => "El pedido " . $pedidoAServir->codigo . " está listo.");
         }
         catch(Exception $e) {
-            $mensaje = array("Estado" => "Error", "Mensaje " => "No hay pedidos en preparación.");
+            $mensaje = array("Estado" => "Error", "Mensaje " => "No hay pedidos pendientes.");
         }       
         return $response->withJson($mensaje, 200);
     }
-    //OK
+    
     public function CancelarPedido($request, $response, $args) {
         try {
             $parametros = $request->getParsedBody();
@@ -207,13 +205,12 @@ class PedidoApi {
                 $mensaje = array("Estado" => "ERROR", "Mensaje" => "Mo hay pedidos con ese código.");            
         }
         catch(Exception $e) {
-            $error = $e->getMessage();
-            $mensaje = array("Estado" => "Error", "Mensaje" => $error);
+            $mensaje = array("Estado" => "Error", "Mensaje" => $e->getMessage());
         }
 
         return $response->withJson($mensaje, 200);        
     }
-    //OK
+   
     public function PedidosCancelados($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -250,7 +247,7 @@ class PedidoApi {
         else
             echo 'No hay pedidos cancelados.';
     }
-    //TODO
+   
     public function LoMasVendido($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -283,7 +280,7 @@ class PedidoApi {
         }   
         PedidoApi::ProductoMasVendido($productosVendidos);
     }
-    //TODO
+
     static function ProductoMasVendido($productosVendidosDao) {
         $productosVendidos = [];
     
@@ -324,7 +321,7 @@ class PedidoApi {
         else
             echo 'Sin operaciones' . PHP_EOL;
     }
-    //TODO
+  
     public function LoMenosVendido($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -357,7 +354,7 @@ class PedidoApi {
         }
         PedidoApi::ProductoMenosVendido($productosVendidosDao);       
     }
-    //TODO
+
     static function ProductoMenosVendido($productosVendidosDao) {
         $productosVendidos = [];
     
@@ -398,7 +395,7 @@ class PedidoApi {
         else
             echo 'No hay Pedidos' . PHP_EOL;
     }
-    //TODO
+  
     public function PedidosRetrasados($request, $response, $args) {
         $fecha = $_GET['fecha'];
         $fecha_desde = $_GET['fecha_desde'];
@@ -427,16 +424,18 @@ class PedidoApi {
         }
 
         if(!$pedidosDao->isEmpty()) {
+            echo 'PEDIDOS RETRASADOS' . PHP_EOL . PHP_EOL;
             for($i = 0; $i < count($pedidosDao); $i++) {           
-                $entregaDao = $pedidosDao[$i]->horaEntrega;
-                $entregaEstimadaDao = $pedidosDao[$i]->horaEntregaEstimada;
+                $entregaDao = $pedidosDao[$i]->hora_entrega;
+                $entregaEstimadaDao = $pedidosDao[$i]->hora_entrega_estimada;
                 $horaEntrega = new DateTime($entregaDao,new DateTimeZone('America/Argentina/Buenos_Aires'));
                 $horaEntregaEstimada = new DateTime($entregaEstimadaDao ,new DateTimeZone('America/Argentina/Buenos_Aires'));
 
                 if($horaEntrega > $horaEntregaEstimada){
                     echo 'Codigo de pedido: ' . $pedidosDao[$i]->codigo . PHP_EOL .
-                        'Hora de entrega estimada: ' . $pedidosDao[$i]->horaEntregaEstimada . PHP_EOL .
-                        'Hora de entrega: ' . $pedidosDao[$i]->horaEntrega . PHP_EOL;
+                        'Hora de entrega estimada: ' . $pedidosDao[$i]->hora_entrega_estimada . PHP_EOL .
+                        'Hora de entrega: ' . $pedidosDao[$i]->hora_entrega . PHP_EOL .
+                        '------------------------'. PHP_EOL;
                 }
             }
         }

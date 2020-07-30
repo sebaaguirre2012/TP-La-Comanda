@@ -23,31 +23,31 @@ return function (App $app) {
     $container = $app->getContainer();
 
     //EMPLEADO
-    $app->post('/empleado/login/', \EmpleadoApi::class . ':LoginEmpleado'); //OK
-    $app->post('/empleado/alta/', \EmpleadoApi::class . ':AltaEmpleado') //OK
+    $app->post('/empleado/login/', \EmpleadoApi::class . ':LoginEmpleado');
+    $app->post('/empleado/alta/', \EmpleadoApi::class . ':AltaEmpleado')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');
-    $app->get('/empleado/ingresos/', \EmpleadoApi::class . ':IngresosAlSistema') //OK
+    $app->get('/empleado/ingresos/', \EmpleadoApi::class . ':IngresosAlSistema')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');
-    $app->get('/empleado/listado/', \EmpleadoApi::class . ':ListadoEmpleados') //OK
+    $app->get('/empleado/listado/', \EmpleadoApi::class . ':ListadoEmpleados') 
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');  
-    $app->post('/empleado/eliminar/', \EmpleadoApi::class . ':EliminarEmpleado') //OK
+    $app->post('/empleado/eliminar/', \EmpleadoApi::class . ':EliminarEmpleado')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');
-    $app->post('/empleado/suspender/', \EmpleadoApi::class . ':SuspenderEmpleado') //OK
+    $app->post('/empleado/suspender/', \EmpleadoApi::class . ':SuspenderEmpleado')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');
-    $app->get('/empleado/listado/puesto/', \EmpleadoApi::class . ':VerEmpleadosPorPuesto') //OK
+    $app->get('/empleado/listado/puesto/', \EmpleadoApi::class . ':VerEmpleadosPorPuesto')
         ->add(\Middleware::class . ':ValidarToken'); 
-    $app->get('/empleado/operaciones/', \EmpleadoApi::class . ':CantidadOperacionesPorEmpleado') //OK
+    $app->get('/empleado/operaciones/', \EmpleadoApi::class . ':CantidadOperacionesPorEmpleado')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken'); 
-    $app->get('/empleado/operaciones/sector/', \EmpleadoApi::class . ':CantidadOperacionesPorSector') //OK
+    $app->get('/empleado/operaciones/sector/', \EmpleadoApi::class . ':CantidadOperacionesPorSector')
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');  
-    $app->get('/empleado/operaciones/sector/empleado/', \EmpleadoApi::class . ':CantidadOperacionesPorSectorYEmpleado') //OK
+    $app->get('/empleado/operaciones/sector/empleado/', \EmpleadoApi::class . ':CantidadOperacionesPorSectorYEmpleado') 
         ->add(\Middleware::class . ':ValidarSocio')
         ->add(\Middleware::class . ':ValidarToken');  
     
