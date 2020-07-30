@@ -5,16 +5,16 @@ require_once 'token.php';
 class EmpleadoApi {
     //OK
     public function LoginEmpleado($request, $response, $args) {
-        $parametros = $request->getParsedBody();
-        $usuario = $parametros['usuario'];
-        $clave = $parametros['clave'];
+        try {  
+            $parametros = $request->getParsedBody();
+            $usuario = $parametros['usuario'];
+            $clave = $parametros['clave'];
 
-        $empleadoDao = new App\Models\Empleado;
-        $tipoEmpleadoDao = new App\Models\TipoEmpleado;
-        $logger = new App\Models\Logger;
-        $horaActual = new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires'));
+            $empleadoDao = new App\Models\Empleado;
+            $tipoEmpleadoDao = new App\Models\TipoEmpleado;
+            $logger = new App\Models\Logger;
+            $horaActual = new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires'));  
 
-        try {            
             $empleado = $empleadoDao->where([['usuario', '=', $usuario], ['clave', '=', $clave]])
                                     ->first();
 
@@ -43,13 +43,11 @@ class EmpleadoApi {
                     $mensaje = array("Mensaje" => "Bienvenido " . $usuario, "Token " => $token);
                 }
             }
-            else {
-                $mensaje = array("Estado" => "Error", "Mensaje " => "Usuario y/o clave incorrectos");
-            }
+            else
+                $mensaje = array("Estado" => "Error", "Mensaje " => "Usuario y/o clave incorrectos.");
         }
         catch(Exception $e) {
-            $error = $e->getMessage();
-            $mensaje = array("Estado" => "Error", "Mensaje " => $error);
+            $mensaje = array("Estado" => "Error", "Mensaje" => $e->getMessage());
         }
 
         return $response->withJson($mensaje, 200);
@@ -96,7 +94,6 @@ class EmpleadoApi {
                                 ->first();
             if($auiliar != null)
                 $mensaje = array("Estado" => "Ok", "Mensaje" => "El nombre de usuario ya existe.");
-                
             else {
                 $empleado->usuario = $usuario;
                 $empleado->clave = $clave;
@@ -104,13 +101,13 @@ class EmpleadoApi {
                 $empleado->id_sector = $id_sector;
                 $empleado->estado = 'A';
                 $empleado->save();
-                $mensaje = array("Estado" => "Ok", "Mensaje" => "El alta se realizó correctamente");
+                $mensaje = array("Estado" => "Ok", "Mensaje" => "El alta se realizó correctamente.");
             }
         }
         catch(Exception $e) {
-            $error = $e->getMessage();
-            $mensaje = array("Estado" => "ERROR", "Mensaje" => $error);
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
         }
+
         return $response->withJson($mensaje, 200);    
     }
     //OK
@@ -122,20 +119,14 @@ class EmpleadoApi {
         $logger = new App\Models\Logger;
         date_default_timezone_set("America/Argentina/Buenos_Aires");
 
-        if($fecha != 0) {         
+        if($fecha != "") {         
             $fecha = strtotime($fecha);
             $fecha = date('Y-m-d H:i:s' , $fecha); 
              
             $logueos = $logger->rightJoin('empleados as em', 'loggers.id_empleado', '=', 'em.id')
-                ->where('fecha_ingreso', '=', $fecha)
-                ->where('em.estado', '!=', 'E')->get();           
-    
-            for($i = 0; $i < count($logueos); $i++) {
-                echo 'Empleado: '. $logueos[$i]->usuario . PHP_EOL . 
-                     'Fecha de ingreso: ' . $logueos[$i]->fecha_ingreso . PHP_EOL .
-                     'Hora de ingreso: ' . $logueos[$i]->hora_ingreso . PHP_EOL .
-                     '-------------------------------------------------------'. PHP_EOL;
-            }
+                              ->where('fecha_ingreso', '=', $fecha)
+                              ->where('em.estado', '!=', 'E')
+                              ->get(); 
         }
         else {
             $fecha_desde = strtotime($fecha_desde);
@@ -144,26 +135,26 @@ class EmpleadoApi {
             $fecha_hasta = date('Y-m-d H:i:s', $fecha_hasta);
 
             $logueos = $logger->rightJoin('empleados as em', 'loggers.id_empleado', '=', 'em.id')
-                ->where('fecha_ingreso', '>=', $fecha_desde)
-                ->where('fecha_ingreso', '<=', $fecha_hasta)
-                ->where('em.estado', '!=', 'E')->get();
-
-            for($i = 0; $i < count($logueos); $i++) {
-                echo 'Empleado: '. $logueos[$i]->usuario . PHP_EOL . 
-                     'Fecha de ingreso: ' . $logueos[$i]->fecha_ingreso . PHP_EOL .
-                     'Hora de ingreso: ' . $logueos[$i]->hora_ingreso . PHP_EOL .
-                     '-------------------------------------------------------'. PHP_EOL;
-            }
-        } 
+                              ->where('fecha_ingreso', '>=', $fecha_desde)
+                              ->where('fecha_ingreso', '<=', $fecha_hasta)
+                              ->where('em.estado', '!=', 'E')
+                              ->get();         
+        }
+        for($i = 0; $i < count($logueos); $i++) {
+            echo 'Empleado: '. $logueos[$i]->usuario . PHP_EOL . 
+                 'Fecha de ingreso: ' . $logueos[$i]->fecha_ingreso . PHP_EOL .
+                 'Hora de ingreso: ' . $logueos[$i]->hora_ingreso . PHP_EOL .
+                 '-------------------------------------------------------'. PHP_EOL;
+        }
     }
     //OK
     public function ListadoEmpleados($request, $response, $args) {
         $empleado = new App\Models\Empleado;
         $empleados = $empleado->where('estado', '!=', 'E')->get();
 
-        for($i = 0; $i < count($empleados); $i++) {
-            echo 'Id: ' . $empleados[$i]->id . ". Usuario: " . $empleados[$i]->usuario . ". Estado: " . $empleados[$i]->estado . PHP_EOL;
-        }        
+        echo 'Listado de Empleados' . PHP_EOL . PHP_EOL;
+        for($i = 0; $i < count($empleados); $i++)
+            echo 'Id: ' . $empleados[$i]->id . ". Usuario: " . $empleados[$i]->usuario . ". Estado: " . $empleados[$i]->estado . PHP_EOL;      
     }
     //OK
     public function EliminarEmpleado($request, $response, $args) {
@@ -174,7 +165,8 @@ class EmpleadoApi {
             $empleadoDao = new App\Models\Empleado;
 
             $empleado = $empleadoDao->where('id', '=', $idEmpleado)
-                                    ->where('estado', '!=', 'E')->first();
+                                    ->where('estado', '!=', 'E')
+                                    ->first();
 
             if($empleado != null) {
                 $empleado->estado = 'E';
@@ -183,12 +175,11 @@ class EmpleadoApi {
             }
             else
                 $mensaje = array("Estado" => "ERROR", "Mensaje" => "No existe empleado con el Id: " . $idEmpleado);
-            
         }
         catch(Exception $e) {
-            $error = $e->getMessage();
-            $mensaje = array("Estado" => "ERROR", "Mensaje" => $error);
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
         }
+
         return $response->withJson($mensaje, 200);
     }
     //OK
@@ -198,7 +189,8 @@ class EmpleadoApi {
 
         try {
             $empleadoDao = new App\Models\Empleado;
-            $empleado = $empleadoDao->where('id', '=', $idEmpleado)->first();
+            $empleado = $empleadoDao->where('id', '=', $idEmpleado)
+                                    ->first();
             if($empleado != null){
                 $empleado->estado = 'S';
                 $empleado->save();
@@ -208,9 +200,9 @@ class EmpleadoApi {
                 $mensaje = array("Estado" => "ERROR", "Mensaje" => "No existe empleado con el Id: " . $idEmpleado);
         }
         catch(Exception $e) {
-            $error = $e->getMessage();
-            $mensaje = array("Estado" => "ERROR", "Mensaje" => $error);
+            $mensaje = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
         }
+
         return $response->withJson($mensaje, 200); 
     }
     //OK
@@ -223,20 +215,19 @@ class EmpleadoApi {
 
             $empleado = new App\Models\Empleado;
 
-            $empleados = $empleado ->join('tipo_empleados', 'empleados.id_tipo_empleado', '=', 'tipo_empleados.id')
+            $empleados = $empleado  ->join('tipo_empleados', 'empleados.id_tipo_empleado', '=', 'tipo_empleados.id')
                                     ->where('tipo_empleados.tipo_empleado', '=', $puesto)
-                                    ->select('*')->get();
+                                    ->select('*')
+                                    ->get();
             
-            if($empleados != null){
+            if($empleados != null) {
                 echo 'Listado de ' . strtolower($puesto) . 's' . PHP_EOL . PHP_EOL;
-                for($i = 0; $i < count($empleados); $i++) {
+                for($i = 0; $i < count($empleados); $i++)
                     echo 'Usuario: ' . $empleados[$i]->usuario . PHP_EOL;
-                }  
             }                   
         }
         catch(Exception $e) {
-            $error = $e->getMessage();
-            $mensaje = array("Estado" => "Error", "Mensaje" => $error);
+            $mensaje = array("Estado" => "Error", "Mensaje" => $e->getMessage());
             return $response->withJson($mensaje, 200);
         }
     }
@@ -252,7 +243,7 @@ class EmpleadoApi {
 
         if($fecha != "") {         
             $fecha = strtotime($fecha);
-            $fecha = date('Y-m-d H:i:s' , $fecha);             
+            $fecha = date('Y-m-d H:i:s', $fecha);             
 
             $operaciones = $operacion->join('empleados', 'operaciones.id_empleado', '=', 'empleados.id')
                                      ->where('operaciones.fecha', '=', $fecha)
@@ -281,7 +272,6 @@ class EmpleadoApi {
 
         if ($empleado != null)  
             echo 'El empleado ' . $empleado->usuario . ' realizó ' . count($operaciones) . ' operaciones';
-
         else
             echo 'No existe empleado con ese nombre.';
     }

@@ -467,16 +467,16 @@ class MesaApi {
         }
         return $response->withJson($respuesta, 200);
     }
-
+    //OK
     public function FacturaMayorImporte($request, $response, $args) {
-        $fecha = $_GET['fecha'];
-        $fecha_desde = $_GET['fecha_desde'];
-        $fecha_hasta = $_GET['fecha_hasta'];
-
-        $factura = new App\Models\Factura;
-        $respuesta;
-
         try {
+            $fecha = $_GET['fecha'];
+            $fecha_desde = $_GET['fecha_desde'];
+            $fecha_hasta = $_GET['fecha_hasta'];
+
+            $factura = new App\Models\Factura;
+            $respuesta;
+
             if($fecha != "") {         
                 $fecha = strtotime($fecha);
                 $fecha = date('Y-m-d H:i:s', $fecha);
@@ -518,267 +518,204 @@ class MesaApi {
 
         return $response->withJson($respuesta, 200);
     }
+    //OK
+    public function FacturaMenorImporte($request, $response, $args) {
+        try {
+            $fecha = $_GET['fecha'];
+            $fecha_desde = $_GET['fecha_desde'];
+            $fecha_hasta = $_GET['fecha_hasta'];
+            $factura = new App\Models\Factura;
+            $respuesta;
 
-    // public function FacturaMenorImporte($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $factura = new App\Models\Factura;
-    //     $respuesta;
-
-    //     try
-    //     {
-    //         if($fecha != 0)
-    //         {         
-    //             $fecha = strtotime($fecha);
-    //             $fecha = date('Y-m-d H:i:s' , $fecha);
+            if($fecha != "") {         
+                $fecha = strtotime($fecha);
+                $fecha = date('Y-m-d H:i:s' , $fecha);
                 
-    //             $facturasMenorImporte = $factura->where('fecha', '=', $fecha)
-    //                                             ->selectRaw( 'id_mesa, Min(total) as "menorImporte"')
-    //                                             ->groupBy('id_mesa')->get();
+                $facturasMenorImporte = $factura->where('fecha', '=', $fecha)
+                                                ->selectRaw( 'id_mesa, Min(total) as "menorImporte"')
+                                                ->groupBy('id_mesa')
+                                                ->get();
+            }
+            else{
+                $fecha_desde = strtotime($fecha_desde);
+                $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+                $fecha_hasta = strtotime($fecha_hasta);
+                $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
-    //             $importeMenor = 999999999999;
+                $facturasMenorImporte = $factura->where('fecha', '>=', $fecha_desde)
+                                                ->where('fecha', '<=', $fecha_hasta)
+                                                ->selectRaw( 'id_mesa, Min(total) as "menorImporte"')
+                                                ->groupBy('id_mesa')
+                                                ->get();
+            }
 
-    //             if(count($facturasMenorImporte) > 0)
-    //             {
-    //                 for($i = 0; $i < count($facturasMenorImporte); $i++)
-    //                 {
-    //                     if($facturasMenorImporte[$i]->menorImporte < $importeMenor)
-    //                     {
-    //                         $importeMenor = $facturasMenorImporte[$i]->menorImporte;
-    //                         $respuesta = array("Mesa" => $facturasMenorImporte[$i]->id_mesa, "Importe" => $importeMenor);
-    //                     }
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 $respuesta = array("Mesa" => "Sin informacion", "Importe" => "No hubo facturacion");
-    //             }
-    //         }
-    //         else
-    //         {
-    //             $fecha_desde = strtotime($fecha_desde);
-    //             $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //             $fecha_hasta = strtotime($fecha_hasta);
-    //             $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+            $importeMenor = 999999999999;
 
-    //             $facturasMenorImporte = $factura->where('fecha', '>=', $fecha_desde)
-    //                                             ->where('fecha', '<=', $fecha_hasta)
-    //                                             ->selectRaw( 'id_mesa, Min(total) as "menorImporte"')
-    //                                             ->groupBy('id_mesa')->get();
+            if(count($facturasMenorImporte) > 0) {
+                for($i = 0; $i < count($facturasMenorImporte); $i++) {
+                    if($facturasMenorImporte[$i]->menorImporte < $importeMenor) {
+                        $importeMenor = $facturasMenorImporte[$i]->menorImporte;
+                        $respuesta = array("Mesa" => $facturasMenorImporte[$i]->id_mesa, "Importe" => $importeMenor);
+                    }
+                }
+            }
+            else
+                $respuesta = array("Mesa" => "Sin información", "Importe" => "No hubo facturación");
+        }
+        catch(Exception $e) {
+            $respuesta = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
+        }       
 
-    //             $importeMenor = 999999999999;
+        return $response->withJson($respuesta, 200);
+    }
+    //OK
+    public function FacturacionEntreFechas($request, $response, $args) {
+        $fecha_desde = $_GET['fecha_desde'];
+        $fecha_hasta = $_GET['fecha_hasta'];
+        $idMesa = $_GET['id_mesa'];
+        $fecha_desde = strtotime($fecha_desde);
+        $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+        $fecha_hasta = strtotime($fecha_hasta);
+        $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+        $respuesta;
 
-    //             if(count($facturasMenorImporte) > 0)
-    //             {
-    //                 for($i = 0; $i < count($facturasMenorImporte); $i++)
-    //                 {
-    //                     if($facturasMenorImporte[$i]->menorImporte < $importeMenor)
-    //                     {
-    //                         $importeMenor = $facturasMenorImporte[$i]->menorImporte;
-    //                         $respuesta = array("Mesa" => $facturasMenorImporte[$i]->id_mesa, "Importe" => $importeMenor);
-    //                     }
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 $respuesta = array("Mesa" => "Sin informacion", "Importe" => "No hubo facturacion");
-    //             }
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $mensaje = $e->getMessage();
-    //         $respuesta = array("Estado" => "ERROR", "Mensaje" => $mensaje);
-    //     }       
+        try {
+            $factura = new App\Models\Factura;
 
-    //     return $response->withJson($respuesta, 200);
-    // }
+            $facturacion = $factura ->where('id_mesa', '=', $idMesa)
+                                    ->where('fecha', '>=', $fecha_desde)
+                                    ->where('fecha', '<=', $fecha_hasta)
+                                    ->selectRaw('id_mesa, sum(total) as "facturacion"')
+                                    ->get();                    
 
-    // public function FacturacionEntreFechas($request, $response, $args)
-    // {
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $idMesa = $_GET['id_mesa'];
-    //     $fecha_desde = strtotime($fecha_desde);
-    //     $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //     $fecha_hasta = strtotime($fecha_hasta);
-    //     $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
-    //     $respuesta;
-
-    //     try
-    //     {
-    //         $factura = new App\Models\Factura;
-
-    //         $facturacion = $factura->where('id_mesa', '=', $idMesa)
-    //                             ->where('fecha', '>=', $fecha_desde)
-    //                             ->where('fecha', '<=', $fecha_hasta)
-    //                             ->selectRaw('id_mesa, sum(total) as "facturacion"')
-    //                             ->get();                    
-
-    //         if($facturacion[0]['id_mesa'] == NULL)
-    //             $respuesta = array("Mesa" => "Sin informacion", "Facturacion" => "No hubo facturacion en el período");                      
-    //         else
-    //             $respuesta = array("Mesa" => $facturacion[0]->id_mesa, "Facturacion" => $facturacion[0]->facturacion); 
+            if($facturacion[0]['id_mesa'] == NULL)
+                $respuesta = array("Mesa" => "Sin informaciÓn", "FacturaciÓn" => "No hubo facturaciÓn en el período");                      
+            else
+                $respuesta = array("Mesa" => $facturacion[0]->id_mesa, "Facturacion" => $facturacion[0]->facturacion); 
                 
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $mensaje = $e->getMessage();
-    //         $respuesta = array("Estado" => "ERROR", "Mensaje" => $mensaje);
-    //     }
-    //     return $response->withJson($respuesta, 200);
-    // }
+        }
+        catch(Exception $e) {
+            $respuesta = array("Estado" => "ERROR", "Mensaje" => $e->getMessage());
+        }
 
-    // public function MejoresComentarios($request, $response, $args)
-    // {
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $codigo = $_GET['codigo'];
-    //     $encuesta = new App\Models\Encuesta;
-    //     $mesa = new App\Models\Mesa;       
-        
-    //     try
-    //     {
-    //         $codigoMesa = $mesa->where('codigo', '=', $codigo)->first();
+        return $response->withJson($respuesta, 200);
+    }
+    //TODO!!
+    public function MejoresComentarios($request, $response, $args) {
+        try {
+            $fecha = $_GET['fecha'];
+            $fecha_desde = $_GET['fecha_desde'];
+            $fecha_hasta = $_GET['fecha_hasta'];
+            $codigo = $_GET['codigo_mesa'];
 
-    //         if($codigoMesa)
-    //         {
-    //             if($fecha != 0)
-    //             {         
-    //                 $fecha = strtotime($fecha);
-    //                 $fecha = date('Y-m-d H:i:s' , $fecha); 
-        
-    //                 $mejoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
-    //                                                 ->where('fecha', '=', $fecha)
-    //                                                 ->where('puntuacionRestaurante', '>=', 6)
-    //                                                 ->where('puntuacionMozo', '>=', 6)
-    //                                                 ->where('puntuacionCocinero', '>=', 6)
-    //                                                 ->get();                                
-        
-    //                 if($mejoresComentarios->isEmpty())
-    //                 {
-    //                     echo 'No se registran comentarios para esta mesa en esta fecha';
-    //                 }
-    //                 else 
-    //                 {
-    //                     for($i = 0; $i < count($mejoresComentarios); $i++)
-    //                     {
-    //                         echo 'Puntuacion Restaurante: ' . $mejoresComentarios[$i]->puntuacionRestaurante . ". Comentario: " . $mejoresComentarios[$i]->comentario . "\n";
-    //                     }                
-    //                 }                   
-    //             }
-    //             else
-    //             {
-    //                 $fecha_desde = strtotime($fecha_desde);
-    //                 $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //                 $fecha_hasta = strtotime($fecha_hasta);
-    //                 $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
-        
-    //                 $mejoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
-    //                                                 ->where('fecha', '>=', $fecha_desde)
-    //                                                 ->where('fecha', '<=', $fecha_hasta)
-    //                                                 ->where('puntuacionRestaurante', '>=', 6)
-    //                                                 ->where('puntuacionMozo', '>=', 6)
-    //                                                 ->where('puntuacionCocinero', '>=', 6)
-    //                                                 ->get();
-        
-    //                 for($i = 0; $i < count($mejoresComentarios); $i++)
-    //                 {
-    //                     echo 'Puntuacion Restaurante: ' . $mejoresComentarios[$i]->puntuacionRestaurante . ". Comentario: " . $mejoresComentarios[$i]->comentario . "\n";
-    //                 }
-    //             }
+            $encuesta = new App\Models\Encuesta;
+            $mesa = new App\Models\Mesa;       
+            $codigoMesa = $mesa ->where('codigo', '=', $codigo)
+                                ->first();
 
-    //         }
-    //         else
-    //         {
-    //             echo 'El codigo de mesa es incorrecto';
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $mensaje = $e->getMessage();
-    //         $respuesta = array("Estado" => "Error", "Mensaje" => $mensaje);
-    //         return $request->withJson($respuesta, 200);
-    //     } 
-    // }
+            if($codigoMesa != null) {
+                if($fecha != "") {         
+                    $fecha = strtotime($fecha);
+                    $fecha = date('Y-m-d H:i:s' , $fecha); 
+        
+                    $mejoresComentarios =  $encuesta->where('codigo_mesa', '=', $codigo)
+                                                    ->where('fecha', '=', $fecha)
+                                                    ->where('puntuacion_restaurante', '>=', 6)
+                                                    ->where('puntuacion_mozo', '>=', 6)
+                                                    ->where('puntuacion_cocinero', '>=', 6)
+                                                    ->get();  
+                }
+                else {
+                    $fecha_desde = strtotime($fecha_desde);
+                    $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+                    $fecha_hasta = strtotime($fecha_hasta);
+                    $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+        
+                    $mejoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
+                                                    ->where('fecha', '>=', $fecha_desde)
+                                                    ->where('fecha', '<=', $fecha_hasta)
+                                                    ->where('puntuacion_restaurante', '>=', 6)
+                                                    ->where('puntuacion_mozo', '>=', 6)
+                                                    ->where('puntuacion_cocinero', '>=', 6)
+                                                    ->get();
+                }
 
-    // public function PeoresComentarios($request, $response, $args)
-    // {    
-    //     $fecha = $_GET['fecha'];
-    //     $fecha_desde = $_GET['fecha_desde'];
-    //     $fecha_hasta = $_GET['fecha_hasta'];
-    //     $codigo = $_GET['codigo'];
-    //     $encuesta = new App\Models\Encuesta;
-    //     $mesa = new App\Models\Mesa;        
-        
-    //     try
-    //     {
-    //         $codigoMesa = $mesa->where('codigo', '=', $codigo)->first();
+                if($mejoresComentarios->isEmpty())
+                    $respuesta = 'No se registran comentarios para esta mesa en esta fecha';
+                else {
+                    $respuesta = "";
+                    for($i = 0; $i < count($mejoresComentarios); $i++) {
+                        $respuesta .'Puntuacion Restaurante: ' . $mejoresComentarios[$i]->puntuacionRestaurante . PHP_EOL .
+                                    '. Comentario: ' . $mejoresComentarios[$i]->comentario . PHP_EOL;
+                    }                
+                }              
+            }
+            else
+                $respuesta = array("Estado" => "Error", "No existe mesa con ese código.");
+        }
+        catch(Exception $e) {
+            $respuesta = array("Estado" => "Error", "Mensaje" => $e->getMessage());
+        } 
 
-    //         if($codigoMesa)
-    //         {
-    //             if($fecha != 0)
-    //             {         
-    //                 $fecha = strtotime($fecha);
-    //                 $fecha = date('Y-m-d H:i:s' , $fecha); 
-        
-    //                 $peoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
-    //                                                 ->where('fecha', '=', $fecha)
-    //                                                 ->where('puntuacionRestaurante', '<=', 5)
-    //                                                 ->where('puntuacionMozo', '<=', 5)
-    //                                                 ->where('puntuacionCocinero', '<=', 5)
-    //                                                 ->get();                                
-        
-    //                 if($peoresComentarios->isEmpty())
-    //                 {
-    //                     echo 'No se registran comentarios para esta mesa en esta fecha';
-    //                 }
-    //                 else 
-    //                 {
-    //                     for($i = 0; $i < count($peoresComentarios); $i++)
-    //                     {
-    //                         echo 'Puntuacion Restaurante: ' . $peoresComentarios[$i]->puntuacionRestaurante . ". Comentario: " . $peoresComentarios[$i]->comentario . "\n";
-    //                     }                
-    //                 }                   
-    //             }
-    //             else
-    //             {
-    //                 $fecha_desde = strtotime($fecha_desde);
-    //                 $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
-    //                 $fecha_hasta = strtotime($fecha_hasta);
-    //                 $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
-        
-    //                 $peoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
-    //                                                 ->where('fecha', '>=', $fecha_desde)
-    //                                                 ->where('fecha', '<=', $fecha_hasta)
-    //                                                 ->where('puntuacionRestaurante', '<=', 5)
-    //                                                 ->where('puntuacionMozo', '<=', 5)
-    //                                                 ->where('puntuacionCocinero', '<=', 5)
-    //                                                 ->get();
-        
-    //                 for($i = 0; $i < count($peoresComentarios); $i++)
-    //                 {
-    //                     echo 'Puntuacion Restaurante: ' . $peoresComentarios[$i]->puntuacionRestaurante . ". Comentario: " . $peoresComentarios[$i]->comentario . "\n";
-    //                 }
-    //             }
-    //         }
-    //         else
-    //         {
-    //             echo 'El codigo de mesa es incorrecto';
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $mensaje = $e->getMessage();
-    //         $respuesta = array("Estado" => "Error", "Mensaje" => $mensaje);
-    //         return $request->withJson($respuesta, 200);
-    //     } 
-    // }
+        return $request->withJson($respuesta, 200);
+    }
+    //TODO!!
+    public function PeoresComentarios($request, $response, $args) {    
+        try {
+            $fecha = $_GET['fecha'];
+            $fecha_desde = $_GET['fecha_desde'];
+            $fecha_hasta = $_GET['fecha_hasta'];
+            $codigo = $_GET['codigo'];
 
-    
+            $encuesta = new App\Models\Encuesta;
+            $mesa = new App\Models\Mesa;
+            $codigoMesa = $mesa->where('codigo', '=', $codigo)->first();
 
-    
+            if($codigoMesa != null) {
+                if($fecha != "") {         
+                    $fecha = strtotime($fecha);
+                    $fecha = date('Y-m-d H:i:s' , $fecha); 
+        
+                    $peoresComentarios =  $encuesta ->where('codigo_mesa', '=', $codigo)
+                                                    ->where('fecha', '=', $fecha)
+                                                    ->where('puntuacion_restaurante', '<=', 5)
+                                                    ->where('puntuacion_mozo', '<=', 5)
+                                                    ->where('puntuacion_cocinero', '<=', 5)
+                                                    ->get();  
+                }                              
+                else {
+                    $fecha_desde = strtotime($fecha_desde);
+                    $fecha_desde = date('Y-m-d H:i:s' , $fecha_desde);  
+                    $fecha_hasta = strtotime($fecha_hasta);
+                    $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
+        
+                    $peoresComentarios =  $encuesta->where('codigoMesa', '=', $codigo)
+                                                    ->where('fecha', '>=', $fecha_desde)
+                                                    ->where('fecha', '<=', $fecha_hasta)
+                                                    ->where('puntuacion_restaurante', '<=', 5)
+                                                    ->where('puntuacion_mozo', '<=', 5)
+                                                    ->where('puntuacion_mocinero', '<=', 5)
+                                                    ->get();
+                }
+
+                if($peoresComentarios->isEmpty())
+                    $respuesta = 'No se registran comentarios para la mesa indicada.';
+                else {
+                    $respuesta = "";
+                    for($i = 0; $i < count($peoresComentarios); $i++) {
+                        $respuesta . 'Puntuacion Restaurante: ' . $peoresComentarios[$i]->puntuacionRestaurante . PHP_EOL .
+                                     '. Comentario: ' . $peoresComentarios[$i]->comentario . PHP_EOL;
+                    }                
+                }                   
+           
+            }
+            else
+                $respuesta = 'El codigo de mesa es incorrecto';
+        }
+        catch(Exception $e) {
+            $respuesta = array("Estado" => "Error", "Mensaje" => $e->getMessage());
+        } 
+
+        return $request->withJson($respuesta, 200);
+    }
 }
