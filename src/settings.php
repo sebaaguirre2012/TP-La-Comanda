@@ -19,12 +19,19 @@ return [
         'db' => [
             'driver' => 'mysql',
             'host' => 'bknyvzwuzto9cbmsc9p8-mysql.services.clever-cloud.com',
+            // 'host' => 'localhost',
             'database' => 'bknyvzwuzto9cbmsc9p8',
+            // 'database' => 'comanda',
             'username' => 'ubbggl2mjfdaobbv',
+            // 'username' => 'root',
             'password' => 'Kub862EBrtExN6nixRvo',
+            // 'password' => '',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
         ],
     ],
 ];
+
+
+
