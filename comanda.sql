@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-07-2020 a las 01:23:34
+-- Tiempo de generación: 31-07-2020 a las 14:47:19
 -- Versión del servidor: 10.4.13-MariaDB
 -- Versión de PHP: 7.4.7
 
@@ -18,29 +18,29 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: 'comanda'
+-- Base de datos: `comanda`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'empleados'
+-- Estructura de tabla para la tabla `empleados`
 --
 
-CREATE TABLE 'empleados' (
-  'id' int(11) NOT NULL,
-  'usuario' varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
-  'clave' varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
-  'id_tipo_empleado' int(8) NOT NULL,
-  'id_sector' int(8) NOT NULL,
-  'estado' varchar(10) COLLATE utf8_spanish2_ci NOT NULL
+CREATE TABLE `empleados` (
+  `id` int(11) NOT NULL,
+  `usuario` varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
+  `clave` varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
+  `id_tipo_empleado` int(8) NOT NULL,
+  `id_sector` int(8) NOT NULL,
+  `estado` varchar(10) COLLATE utf8_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'empleados'
+-- Volcado de datos para la tabla `empleados`
 --
 
-INSERT INTO 'empleados' ('id', 'usuario', 'clave', 'id_tipo_empleado', 'id_sector', 'estado') VALUES
+INSERT INTO `empleados` (`id`, `usuario`, `clave`, `id_tipo_empleado`, `id_sector`, `estado`) VALUES
 (1, 'sebastian@aguirre', 'S3b4st14n', 1, 1, 'A'),
 (2, 'juan@mozo', '12345678', 2, 2, 'A'),
 (4, 'jose@mozo', '12345678', 2, 2, 'S'),
@@ -55,44 +55,44 @@ INSERT INTO 'empleados' ('id', 'usuario', 'clave', 'id_tipo_empleado', 'id_secto
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'encuestas'
+-- Estructura de tabla para la tabla `encuestas`
 --
 
-CREATE TABLE 'encuestas' (
-  'id' int(8) NOT NULL,
-  'codigo_mesa' varchar(5) COLLATE utf8_spanish2_ci NOT NULL,
-  'puntuacion_mesa' int(8) NOT NULL,
-  'puntuacion_restaurante' int(8) NOT NULL,
-  'puntuacion_mozo' int(8) NOT NULL,
-  'puntuacion_cocinero' int(11) NOT NULL,
-  'comentario' varchar(66) COLLATE utf8_spanish2_ci NOT NULL,
-  'fecha' date NOT NULL
+CREATE TABLE `encuestas` (
+  `id` int(8) NOT NULL,
+  `codigo_mesa` varchar(5) COLLATE utf8_spanish2_ci NOT NULL,
+  `puntuacion_mesa` int(8) NOT NULL,
+  `puntuacion_restaurante` int(8) NOT NULL,
+  `puntuacion_mozo` int(8) NOT NULL,
+  `puntuacion_cocinero` int(11) NOT NULL,
+  `comentario` varchar(66) COLLATE utf8_spanish2_ci NOT NULL,
+  `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'encuestas'
+-- Volcado de datos para la tabla `encuestas`
 --
 
-INSERT INTO 'encuestas' ('id', 'codigo_mesa', 'puntuacion_mesa', 'puntuacion_restaurante', 'puntuacion_mozo', 'puntuacion_cocinero', 'comentario', 'fecha') VALUES
+INSERT INTO `encuestas` (`id`, `codigo_mesa`, `puntuacion_mesa`, `puntuacion_restaurante`, `puntuacion_mozo`, `puntuacion_cocinero`, `comentario`, `fecha`) VALUES
 (1, '1zneg', 5, 5, 5, 5, 'Primer comentario.', '2020-07-29'),
 (2, 'h8cs3', 8, 10, 6, 7, 'Muy bueno todo.', '2020-07-29');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'estado_mesas'
+-- Estructura de tabla para la tabla `estado_mesas`
 --
 
-CREATE TABLE 'estado_mesas' (
-  'id' int(11) NOT NULL,
-  'descripcion' varchar(200) COLLATE utf8_spanish2_ci NOT NULL
+CREATE TABLE `estado_mesas` (
+  `id` int(11) NOT NULL,
+  `descripcion` varchar(200) COLLATE utf8_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'estado_mesas'
+-- Volcado de datos para la tabla `estado_mesas`
 --
 
-INSERT INTO 'estado_mesas' ('id', 'descripcion') VALUES
+INSERT INTO `estado_mesas` (`id`, `descripcion`) VALUES
 (1, 'clientes esperando pedido'),
 (2, 'clientes comiendo'),
 (3, 'clientes pagando'),
@@ -101,19 +101,19 @@ INSERT INTO 'estado_mesas' ('id', 'descripcion') VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'estado_pedidos'
+-- Estructura de tabla para la tabla `estado_pedidos`
 --
 
-CREATE TABLE 'estado_pedidos' (
-  'id' int(11) NOT NULL,
-  'estado' varchar(50) COLLATE utf8_spanish2_ci NOT NULL
+CREATE TABLE `estado_pedidos` (
+  `id` int(11) NOT NULL,
+  `estado` varchar(50) COLLATE utf8_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'estado_pedidos'
+-- Volcado de datos para la tabla `estado_pedidos`
 --
 
-INSERT INTO 'estado_pedidos' ('id', 'estado') VALUES
+INSERT INTO `estado_pedidos` (`id`, `estado`) VALUES
 (1, 'pendiente'),
 (2, 'en preparacion'),
 (3, 'listo para servir');
@@ -121,41 +121,41 @@ INSERT INTO 'estado_pedidos' ('id', 'estado') VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'facturas'
+-- Estructura de tabla para la tabla `facturas`
 --
 
-CREATE TABLE 'facturas' (
-  'id' int(11) NOT NULL,
-  'id_mesa' int(10) NOT NULL,
-  'total' float NOT NULL,
-  'fecha' date NOT NULL
+CREATE TABLE `facturas` (
+  `id` int(11) NOT NULL,
+  `id_mesa` int(10) NOT NULL,
+  `total` float NOT NULL,
+  `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'facturas'
+-- Volcado de datos para la tabla `facturas`
 --
 
-INSERT INTO 'facturas' ('id', 'id_mesa', 'total', 'fecha') VALUES
+INSERT INTO `facturas` (`id`, `id_mesa`, `total`, `fecha`) VALUES
 (1, 1, 450, '2020-07-25');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'loggers'
+-- Estructura de tabla para la tabla `loggers`
 --
 
-CREATE TABLE 'loggers' (
-  'id' int(11) NOT NULL,
-  'id_empleado' int(10) NOT NULL,
-  'fecha_ingreso' date NOT NULL DEFAULT current_timestamp(),
-  'hora_ingreso' time NOT NULL
+CREATE TABLE `loggers` (
+  `id` int(11) NOT NULL,
+  `id_empleado` int(10) NOT NULL,
+  `fecha_ingreso` date ,
+  `hora_ingreso` time 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'loggers'
+-- Volcado de datos para la tabla `loggers`
 --
 
-INSERT INTO 'loggers' ('id', 'id_empleado', 'fecha_ingreso', 'hora_ingreso') VALUES
+INSERT INTO `loggers` (`id`, `id_empleado`, `fecha_ingreso`, `hora_ingreso`) VALUES
 (1, 1, '2020-07-19', '00:58:02'),
 (2, 1, '2020-07-19', '01:11:17'),
 (3, 2, '2020-07-19', '01:35:04'),
@@ -216,20 +216,20 @@ INSERT INTO 'loggers' ('id', 'id_empleado', 'fecha_ingreso', 'hora_ingreso') VAL
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'mesas'
+-- Estructura de tabla para la tabla `mesas`
 --
 
-CREATE TABLE 'mesas' (
-  'id' int(11) NOT NULL,
-  'codigo' varchar(10) COLLATE utf8_spanish2_ci NOT NULL,
-  'id_estado' int(10) DEFAULT NULL
+CREATE TABLE `mesas` (
+  `id` int(11) NOT NULL,
+  `codigo` varchar(10) COLLATE utf8_spanish2_ci NOT NULL,
+  `id_estado` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'mesas'
+-- Volcado de datos para la tabla `mesas`
 --
 
-INSERT INTO 'mesas' ('id', 'codigo', 'id_estado') VALUES
+INSERT INTO `mesas` (`id`, `codigo`, `id_estado`) VALUES
 (1, '1zneg', 3),
 (2, '4dao1', 1),
 (3, 'knr5t', 2),
@@ -238,21 +238,21 @@ INSERT INTO 'mesas' ('id', 'codigo', 'id_estado') VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'operaciones'
+-- Estructura de tabla para la tabla `operaciones`
 --
 
-CREATE TABLE 'operaciones' (
-  'id' int(11) NOT NULL,
-  'id_empleado' int(10) NOT NULL,
-  'operacion' varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  'fecha' date NOT NULL
+CREATE TABLE `operaciones` (
+  `id` int(11) NOT NULL,
+  `id_empleado` int(10) NOT NULL,
+  `operacion` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `fecha` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'operaciones'
+-- Volcado de datos para la tabla `operaciones`
 --
 
-INSERT INTO 'operaciones' ('id', 'id_empleado', 'operacion', 'fecha') VALUES
+INSERT INTO `operaciones` (`id`, `id_empleado`, `operacion`, `fecha`) VALUES
 (1, 2, '/TP-La-Comanda/public/', '2020-07-19'),
 (2, 2, '/TP-La-Comanda/public/', '2020-07-19'),
 (3, 2, '/TP-La-Comanda/public/', '2020-07-19'),
@@ -444,32 +444,32 @@ INSERT INTO 'operaciones' ('id', 'id_empleado', 'operacion', 'fecha') VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'pedidos'
+-- Estructura de tabla para la tabla `pedidos`
 --
 
-CREATE TABLE 'pedidos' (
-  'id' int(11) NOT NULL,
-  'id_mesa' int(10) NOT NULL,
-  'id_producto' int(10) NOT NULL,
-  'cantidad' int(10) NOT NULL,
-  'nombre_cliente' varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  'codigo' varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
-  'id_estado_pedido' int(10) NOT NULL,
-  'hora_inicial' time NOT NULL,
-  'fecha' date NOT NULL,
-  'nombre_foto' varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
-  'hora_entrega_estimada' time NOT NULL,
-  'tiempo_estimado' time NOT NULL,
-  'id_empleado' int(10) NOT NULL,
-  'id_estado_mesa' int(10) DEFAULT NULL,
-  'hora_entrega' date DEFAULT NULL
+CREATE TABLE `pedidos` (
+  `id` int(11) NOT NULL,
+  `id_mesa` int(10) NOT NULL,
+  `id_producto` int(10) NOT NULL,
+  `cantidad` int(10) NOT NULL,
+  `nombre_cliente` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `codigo` varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
+  `id_estado_pedido` int(10) NOT NULL,
+  `hora_inicial` time NOT NULL,
+  `fecha` date NOT NULL,
+  `nombre_foto` varchar(200) COLLATE utf8_spanish2_ci NOT NULL,
+  `hora_entrega_estimada` time NOT NULL,
+  `tiempo_estimado` time NOT NULL,
+  `id_empleado` int(10) NOT NULL,
+  `id_estado_mesa` int(10) DEFAULT NULL,
+  `hora_entrega` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'pedidos'
+-- Volcado de datos para la tabla `pedidos`
 --
 
-INSERT INTO 'pedidos' ('id', 'id_mesa', 'id_producto', 'cantidad', 'nombre_cliente', 'codigo', 'id_estado_pedido', 'hora_inicial', 'fecha', 'nombre_foto', 'hora_entrega_estimada', 'tiempo_estimado', 'id_empleado', 'id_estado_mesa', 'hora_entrega') VALUES
+INSERT INTO `pedidos` (`id`, `id_mesa`, `id_producto`, `cantidad`, `nombre_cliente`, `codigo`, `id_estado_pedido`, `hora_inicial`, `fecha`, `nombre_foto`, `hora_entrega_estimada`, `tiempo_estimado`, `id_empleado`, `id_estado_mesa`, `hora_entrega`) VALUES
 (7, 1, 1, 3, 'Jorge', '06lak', 3, '22:52:00', '2020-07-23', '', '19:46:00', '00:00:10', 10, 3, NULL),
 (8, 2, 15, 1, 'Marcos', 'u36ql', 4, '22:58:00', '2020-07-23', '', '23:14:00', '00:00:15', 10, 1, NULL),
 (12, 5, 10, 2, 'Jacinto', 'oyvzf', 3, '00:16:00', '2020-07-24', 'oyvzf_5.jpg', '19:46:00', '00:20:00', 10, NULL, NULL),
@@ -481,21 +481,21 @@ INSERT INTO 'pedidos' ('id', 'id_mesa', 'id_producto', 'cantidad', 'nombre_clien
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'productos'
+-- Estructura de tabla para la tabla `productos`
 --
 
-CREATE TABLE 'productos' (
-  'id' int(11) NOT NULL,
-  'id_sector' int(10) NOT NULL,
-  'nombre' varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  'precio' float NOT NULL
+CREATE TABLE `productos` (
+  `id` int(11) NOT NULL,
+  `id_sector` int(10) NOT NULL,
+  `nombre` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `precio` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'productos'
+-- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO 'productos' ('id', 'id_sector', 'nombre', 'precio') VALUES
+INSERT INTO `productos` (`id`, `id_sector`, `nombre`, `precio`) VALUES
 (1, 5, 'Miller', 150),
 (2, 5, 'Corona', 150),
 (3, 5, 'Quilmes', 150),
@@ -520,19 +520,19 @@ INSERT INTO 'productos' ('id', 'id_sector', 'nombre', 'precio') VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'sectores'
+-- Estructura de tabla para la tabla `sectores`
 --
 
-CREATE TABLE 'sectores' (
-  'id' int(11) NOT NULL,
-  'nombre' varchar(200) COLLATE utf8_spanish2_ci NOT NULL
+CREATE TABLE `sectores` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(200) COLLATE utf8_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'sectores'
+-- Volcado de datos para la tabla `sectores`
 --
 
-INSERT INTO 'sectores' ('id', 'nombre') VALUES
+INSERT INTO `sectores` (`id`, `nombre`) VALUES
 (1, 'Local'),
 (2, 'Salon'),
 (3, 'Cocina'),
@@ -543,19 +543,19 @@ INSERT INTO 'sectores' ('id', 'nombre') VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla 'tipo_empleados'
+-- Estructura de tabla para la tabla `tipo_empleados`
 --
 
-CREATE TABLE 'tipo_empleados' (
-  'id' int(11) NOT NULL,
-  'tipo_empleado' varchar(50) COLLATE utf8_spanish2_ci NOT NULL
+CREATE TABLE `tipo_empleados` (
+  `id` int(11) NOT NULL,
+  `tipo_empleado` varchar(50) COLLATE utf8_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla 'tipo_empleados'
+-- Volcado de datos para la tabla `tipo_empleados`
 --
 
-INSERT INTO 'tipo_empleados' ('id', 'tipo_empleado') VALUES
+INSERT INTO `tipo_empleados` (`id`, `tipo_empleado`) VALUES
 (1, 'socio'),
 (2, 'mozo'),
 (3, 'cocinero'),
@@ -568,152 +568,152 @@ INSERT INTO 'tipo_empleados' ('id', 'tipo_empleado') VALUES
 --
 
 --
--- Indices de la tabla 'empleados'
+-- Indices de la tabla `empleados`
 --
-ALTER TABLE 'empleados'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `empleados`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'encuestas'
+-- Indices de la tabla `encuestas`
 --
-ALTER TABLE 'encuestas'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `encuestas`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'estado_mesas'
+-- Indices de la tabla `estado_mesas`
 --
-ALTER TABLE 'estado_mesas'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `estado_mesas`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'estado_pedidos'
+-- Indices de la tabla `estado_pedidos`
 --
-ALTER TABLE 'estado_pedidos'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `estado_pedidos`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'facturas'
+-- Indices de la tabla `facturas`
 --
-ALTER TABLE 'facturas'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `facturas`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'loggers'
+-- Indices de la tabla `loggers`
 --
-ALTER TABLE 'loggers'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `loggers`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'mesas'
+-- Indices de la tabla `mesas`
 --
-ALTER TABLE 'mesas'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `mesas`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'operaciones'
+-- Indices de la tabla `operaciones`
 --
-ALTER TABLE 'operaciones'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `operaciones`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'pedidos'
+-- Indices de la tabla `pedidos`
 --
-ALTER TABLE 'pedidos'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'productos'
+-- Indices de la tabla `productos`
 --
-ALTER TABLE 'productos'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `productos`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'sectores'
+-- Indices de la tabla `sectores`
 --
-ALTER TABLE 'sectores'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `sectores`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla 'tipo_empleados'
+-- Indices de la tabla `tipo_empleados`
 --
-ALTER TABLE 'tipo_empleados'
-  ADD PRIMARY KEY ('id');
+ALTER TABLE `tipo_empleados`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla 'empleados'
+-- AUTO_INCREMENT de la tabla `empleados`
 --
-ALTER TABLE 'empleados'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+ALTER TABLE `empleados`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla 'encuestas'
+-- AUTO_INCREMENT de la tabla `encuestas`
 --
-ALTER TABLE 'encuestas'
-  MODIFY 'id' int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `encuestas`
+  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla 'estado_mesas'
+-- AUTO_INCREMENT de la tabla `estado_mesas`
 --
-ALTER TABLE 'estado_mesas'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `estado_mesas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla 'estado_pedidos'
+-- AUTO_INCREMENT de la tabla `estado_pedidos`
 --
-ALTER TABLE 'estado_pedidos'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `estado_pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla 'facturas'
+-- AUTO_INCREMENT de la tabla `facturas`
 --
-ALTER TABLE 'facturas'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `facturas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla 'loggers'
+-- AUTO_INCREMENT de la tabla `loggers`
 --
-ALTER TABLE 'loggers'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+ALTER TABLE `loggers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
--- AUTO_INCREMENT de la tabla 'mesas'
+-- AUTO_INCREMENT de la tabla `mesas`
 --
-ALTER TABLE 'mesas'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE `mesas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT de la tabla 'operaciones'
+-- AUTO_INCREMENT de la tabla `operaciones`
 --
-ALTER TABLE 'operaciones'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=188;
+ALTER TABLE `operaciones`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=188;
 
 --
--- AUTO_INCREMENT de la tabla 'pedidos'
+-- AUTO_INCREMENT de la tabla `pedidos`
 --
-ALTER TABLE 'pedidos'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+ALTER TABLE `pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT de la tabla 'productos'
+-- AUTO_INCREMENT de la tabla `productos`
 --
-ALTER TABLE 'productos'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+ALTER TABLE `productos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT de la tabla 'sectores'
+-- AUTO_INCREMENT de la tabla `sectores`
 --
-ALTER TABLE 'sectores'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE `sectores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT de la tabla 'tipo_empleados'
+-- AUTO_INCREMENT de la tabla `tipo_empleados`
 --
-ALTER TABLE 'tipo_empleados'
-  MODIFY 'id' int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE `tipo_empleados`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
