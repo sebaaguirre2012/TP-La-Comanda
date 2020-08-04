@@ -24,7 +24,7 @@ return [
             // 'database' => 'comanda',
             'username' => 'ubbggl2mjfdaobbv',
             // 'username' => 'root',
-            'password' => 'Kub862EBrtExN6nixRvo',
+            'password' => '',
             // 'password' => '',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',

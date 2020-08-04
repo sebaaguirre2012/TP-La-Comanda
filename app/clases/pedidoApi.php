@@ -145,11 +145,11 @@ class PedidoApi {
         $pedido = new App\Models\Pedido;
         $pedidoActual = $pedido ->where('codigo', '=', $codigoPedido)
                                 ->first();
-
+    
         $mensaje = array("Estado" => "Error", "Mensaje " => "Verifique los datos ingresados.");                      
         if ($pedidoActual != null && $idMesa != null) {
             $entrega = $pedidoActual->hora_entrega_estimada;
-
+      
             if($pedidoActual->id_estado_pedido == 2 && $pedidoActual->id_mesa == $idMesa->id) {            
                 $horaActual = new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires'));
                 $horaEntregaEstimada = new DateTime($entrega, new DateTimeZone('America/Argentina/Buenos_Aires'));
@@ -260,10 +260,10 @@ class PedidoApi {
             $fecha = date('Y-m-d H:i:s' , $fecha);
             
             $productosVendidos = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
-                                        ->where('pedidos.fecha', '=', $fecha)
-                                        ->select('pedidos.id_producto', 'productos.nombre')
-                                        ->orderBy('pedidos.id_producto')
-                                        ->get();        
+                                         ->where('pedidos.fecha', '=', $fecha)
+                                         ->select('pedidos.id_producto', 'productos.nombre')
+                                         ->orderBy('pedidos.id_producto')
+                                         ->get();        
         }
         else {
             $fecha_desde = strtotime($fecha_desde);
@@ -272,21 +272,32 @@ class PedidoApi {
             $fecha_hasta = date('Y-m-d H:i:s' , $fecha_hasta);
 
             $productosVendidos = $pedido ->join('productos', 'pedidos.id_producto', '=', 'productos.id')
-                                        ->where('pedidos.fecha', '>=', $fecha_desde)
-                                        ->where('pedidos.fecha', '<=', $fecha_hasta)
-                                        ->select('pedidos.id_producto', 'productos.nombre', 'pedidos.cantidad')
-                                        ->orderBy('pedidos.id_producto')
-                                        ->get();
+                                         ->where('pedidos.fecha', '>=', $fecha_desde)
+                                         ->where('pedidos.fecha', '<=', $fecha_hasta)
+                                         ->select('pedidos.id_producto', 'productos.nombre', 'pedidos.cantidad')
+                                         ->orderBy('pedidos.id_producto')
+                                         ->get();
         }   
         PedidoApi::ProductoMasVendido($productosVendidos);
     }
 
     static function ProductoMasVendido($productosVendidosDao) {
+        // $aux = array();
+        // foreach($productosVendidosDao as $prod)
+        //     array_push($aux, $prod->id_producto); 
+
+        // $ids = array_unique($aux);
+
+        // $productosVendidos = [];
+    
+        // for($i = 0; $i < count($productosVendidosDao); $i++)
+        //     $productosVendidos[] = array("nombre" => $productosVendidosDao[$i]->nombre, "cantidad" => $productosVendidosDao[$i]->cantidad);
+        
         $productosVendidos = [];
     
         for($i = 0; $i < count($productosVendidosDao); $i++)
             $productosVendidos[] = $productosVendidosDao[$i]->nombre;
-
+            
         $productosVendidos[] = -1;
         $productoMasVendido;
         $cantidad = 0;
@@ -295,7 +306,7 @@ class PedidoApi {
             $contador = 1;            
     
             for($i = 0; $i <= count($productosVendidos); $i++) {
-                if($productosVendidos[$i+1] == -1) {
+                if($productosVendidos[$i + 1] == -1) {
                     if($contador > $cantidad) {
                         $cantidad = $contador;
                         $productoMasVendido = $productosVendidos[$i];
@@ -304,7 +315,7 @@ class PedidoApi {
                     break;            
                 }
 
-                if($productosVendidos[$i+1] == $productosVendidos[$i])
+                if($productosVendidos[$i + 1] == $productosVendidos[$i])
                     $contador++;
 
                 else {
